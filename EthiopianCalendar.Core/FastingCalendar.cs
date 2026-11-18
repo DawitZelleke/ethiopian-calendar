@@ -15,7 +15,7 @@ public sealed record FastPeriod(string Name, EthiopianDate Start, EthiopianDate 
 /// <summary>
 /// Fixed feasts and the full fasting calendar for an Ethiopian year.
 ///
-/// Rules:
+/// Rules (confirmed against my family's practice):
 /// 1. Named fasts (Nineveh, Abiy Tsom, Hawaryat, Nebiyat, Filseta, Gehad) are fast
 ///    days on every day of their period. No exceptions.
 /// 2. Outside named fasts, every Wednesday and Friday is a fast day (Tsome Dihnet), except:

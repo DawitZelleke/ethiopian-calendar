@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="EthiopianCalendar.Api/EthiopianCalendar.Api.csproj" />
   <Project Path="EthiopianCalendar.Core/EthiopianCalendar.Core.csproj" />
   <Project Path="EthiopianCalendar.Tests/EthiopianCalendar.Tests.csproj" />
 </Solution>
