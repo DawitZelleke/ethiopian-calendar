@@ -37,7 +37,7 @@ Requires the .NET 10 SDK.
 
 - [x] Ethiopian ↔ Gregorian conversion
 - [x] Bahire Hasab and moveable observances
-- [ ] Fixed feasts and fasts (Genna, Timkat, Tsome Nebiyat, Filseta, weekly Wednesday and Friday fasts)
+- [x] Fixed feasts and fasts (Genna, Timkat, Tsome Nebiyat, Filseta, weekly Wednesday and Friday fasts)
 - [ ] REST API
 - [ ] iCal subscription feed
 - [ ] Web UI in English and Amharic
