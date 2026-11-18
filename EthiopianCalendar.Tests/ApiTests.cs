@@ -107,6 +107,15 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
     }
 
     [Fact]
+    public async Task Health_ReturnsOk()
+    {
+        var response = await _client.GetAsync("/api/health");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("\"status\":\"ok\"", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
     public async Task UnknownApiRoute_Returns404()
     {
         var response = await _client.GetAsync("/api/does-not-exist");
