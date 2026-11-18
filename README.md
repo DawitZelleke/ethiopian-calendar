@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/DawitZelleke/ethiopian-calendar/actions/workflows/ci.yml/badge.svg)
 
-A C# / .NET 10 library and REST API that converts between the Ethiopian and Gregorian calendars and computes the feasts and fasts of the Ethiopian Orthodox Tewahedo Church using **Bahire Hasab**, the church's traditional calculation.
+A C# / .NET 10 engine, REST API and React + TypeScript site that converts between the Ethiopian and Gregorian calendars and computes the feasts and fasts of the Ethiopian Orthodox Tewahedo Church using **Bahire Hasab**, the church's traditional calculation.
 
 I built it because the fasting calendar shapes my year, and most apps either skip the Ethiopian calendar or hard-code a few years of dates. This computes any year from the rules themselves.
 
@@ -12,6 +12,17 @@ I built it because the fasting calendar shapes my year, and most apps either ski
 - Computes Bahire Hasab step by step (Amete Alem → Wenber → Metqi → Tewsak → Nineveh) and exposes every intermediate value, so the result can be explained rather than just shown
 - Derives all moveable observances from Nineveh: Abiy Tsom, Hosanna, Siklet, Fasika, Erget, Paraclete, Tsome Hawaryat and more
 - Answers "is this a fast day, and why?" for any date: named fasts, the weekly Wednesday and Friday fasts, and their exceptions
+
+## The site and Record Mode
+
+The React + TypeScript site (in `web/`) shows today's Ethiopian date, whether it's a fast day ("Day 1 of 44"), and what's coming up.
+
+**Record Mode** (`/record/2026-11-24`) is a fixed 1080×1920 (9:16) canvas built for screen-recording short vertical videos about each fast and feast:
+
+- Content stays inside the safe zones that platform UI covers on Shorts, TikTok and Reels (press `G` to show them)
+- Each narration beat is revealed with `→` / `Space`; `←` goes back, `R` restarts
+- Large, high-contrast type that survives compression and muted, small-screen viewing
+- Written content per observance (Ge'ez name, transliteration, meaning, practices, sources, review status) lives in `web/src/content/*.json`, separate from the date engine
 
 ## API
 
@@ -38,11 +49,22 @@ Invalid input (for example Pagume 6 in a non-leap year) returns `400 Bad Request
 ## Run it
 
 ```bash
-dotnet test
-dotnet run --project EthiopianCalendar.Api
+# API on :5199
+dotnet run --project EthiopianCalendar.Api --urls http://localhost:5199
+
+# Site with hot reload on :5173 (forwards /api to the API)
+cd web && npm install && npm run dev
 ```
 
-Requires the .NET 10 SDK.
+Tests: `dotnet test` and `cd web && npm test`.
+
+Production is a single Docker image: the site is built into the API's `wwwroot`, so one container serves both.
+
+```bash
+docker build -t ethiopian-calendar . && docker run -p 8080:8080 ethiopian-calendar
+```
+
+Requires the .NET 10 SDK and Node 22.
 
 ## Design
 
@@ -50,6 +72,8 @@ Requires the .NET 10 SDK.
 - All conversion goes through the Julian Day Number, which turns date arithmetic across months and years into integer addition.
 - Moveable observances are a data table of offsets from Nineveh, not separate functions. Adding one is a one-line change.
 - The API is a thin layer over the core library. Validation lives once, in the core, and the API translates it into HTTP responses.
+- Dates come from the engine; words come from content files. Each can change without touching the other.
+- Record Mode's scene and step logic is a pure TypeScript module with unit tests, separate from the React components that draw it.
 
 ## Roadmap
 
@@ -57,6 +81,8 @@ Requires the .NET 10 SDK.
 - [x] Bahire Hasab and moveable observances
 - [x] Fixed feasts and fasts, with weekly fast exceptions
 - [x] REST API
-- [ ] iCal subscription feed
-- [ ] Web UI in English and Amharic
+- [x] Web UI with Record Mode for vertical video
 - [ ] Deployed publicly
+- [ ] Content for every fast and feast, reviewed by a priest
+- [ ] Shareable page per fast and feast
+- [ ] iCal subscription feed
