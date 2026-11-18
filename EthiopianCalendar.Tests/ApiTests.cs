@@ -107,6 +107,14 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
     }
 
     [Fact]
+    public async Task UnknownApiRoute_Returns404()
+    {
+        var response = await _client.GetAsync("/api/does-not-exist");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
     public async Task InvalidDate_ReturnsReadableProblemDetails()
     {
         var response = await _client.GetAsync("/api/convert/to-gregorian/2018/13/6");

@@ -20,6 +20,10 @@ app.UseExceptionHandler(new ExceptionHandlerOptions
 });
 app.UseStatusCodePages();
 
+// Serve the React site (built into wwwroot by `npm run build` in /web).
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 var api = app.MapGroup("/api");
 
 // One day: its Ethiopian date, whether it is a fast day and why, and any feasts.
@@ -51,6 +55,12 @@ api.MapGet("/convert/to-ethiopian/{date}", (DateOnly date) =>
 
 api.MapGet("/convert/to-gregorian/{year:int}/{month:int}/{day:int}", (int year, int month, int day) =>
     Handle(() => EthiopianDateDto.From(new EthiopianDate(year, month, day))));
+
+// Unknown /api routes are a 404, not the website.
+api.MapFallback(() => TypedResults.NotFound());
+
+// Any other path (/, /record/2026-11-24) is a page in the React app.
+app.MapFallbackToFile("index.html");
 
 app.Run();
 
