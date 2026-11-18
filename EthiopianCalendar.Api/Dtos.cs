@@ -58,3 +58,22 @@ public sealed record BahireHasabDto(
         EthiopianDateDto.From(r.Nineveh),
         EthiopianDateDto.From(r.Nineveh.AddDays(MoveableFeasts.FasikaOffset)));
 }
+
+public sealed record OccurrenceDto(
+    string Id,
+    string Name,
+    EthiopianDateDto Start,
+    EthiopianDateDto End,
+    int LengthInDays,
+    bool InProgress,
+    int? DayNumber)
+{
+    public static OccurrenceDto From(Occurrence o, EthiopianDate today)
+    {
+        bool inProgress = o.IsInProgressOn(today);
+        return new(
+            o.Id, o.Name, EthiopianDateDto.From(o.Start), EthiopianDateDto.From(o.End), o.LengthInDays,
+            inProgress,
+            inProgress ? today.ToJulianDayNumber() - o.Start.ToJulianDayNumber() + 1 : null);
+    }
+}

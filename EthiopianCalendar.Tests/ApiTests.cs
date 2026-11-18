@@ -107,6 +107,57 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
     }
 
     [Fact]
+    public async Task NextOccurrence_BeforeNebiyat_ReturnsUpcomingFast()
+    {
+        var o = await _client.GetFromJsonAsync<OccurrenceDto>("/api/observances/tsome-nebiyat/next?from=2026-11-18", Json);
+
+        Assert.NotNull(o);
+        Assert.Equal(new DateOnly(2026, 11, 24), o.Start.Gregorian);
+        Assert.Equal(new DateOnly(2027, 1, 6), o.End.Gregorian);
+        Assert.Equal(44, o.LengthInDays);
+        Assert.False(o.InProgress);
+        Assert.Null(o.DayNumber);
+    }
+
+    [Fact]
+    public async Task NextOccurrence_DuringNebiyat_ReturnsCurrentFastWithDayNumber()
+    {
+        var o = await _client.GetFromJsonAsync<OccurrenceDto>("/api/observances/tsome-nebiyat/next?from=2026-12-01", Json);
+
+        Assert.NotNull(o);
+        Assert.True(o.InProgress);
+        Assert.Equal(8, o.DayNumber);
+    }
+
+    [Fact]
+    public async Task NextOccurrence_AfterGenna_RollsToNextYear()
+    {
+        var o = await _client.GetFromJsonAsync<OccurrenceDto>("/api/observances/genna/next?from=2027-01-08", Json);
+
+        Assert.NotNull(o);
+        Assert.Equal(new DateOnly(2028, 1, 7), o.Start.Gregorian);
+        Assert.Equal(1, o.LengthInDays);
+    }
+
+    [Fact]
+    public async Task NextOccurrence_AbiyTsom_ReturnsTheFullFastNotTheOneDayMarker()
+    {
+        var o = await _client.GetFromJsonAsync<OccurrenceDto>("/api/observances/abiy-tsom/next?from=2026-11-18", Json);
+
+        Assert.NotNull(o);
+        Assert.Equal(new DateOnly(2027, 3, 8), o.Start.Gregorian);
+        Assert.Equal(55, o.LengthInDays);
+    }
+
+    [Fact]
+    public async Task NextOccurrence_UnknownId_Returns404()
+    {
+        var response = await _client.GetAsync("/api/observances/not-a-feast/next");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Health_ReturnsOk()
     {
         var response = await _client.GetAsync("/api/health");

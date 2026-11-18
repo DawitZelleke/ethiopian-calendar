@@ -68,6 +68,11 @@ describe('buildScenes', () => {
     expect(stepCount(scenes[3])).toBe(3) // one step per list item
   })
 
+  it('ends by pointing viewers at the page for this fast', () => {
+    const scenes = buildScenes(nebiyatDay, pickFocus(nebiyatDay, entries), 'example.com')
+    expect(scenes.at(-1)).toMatchObject({ type: 'close', url: 'example.com/tsome-nebiyat' })
+  })
+
   it('builds only title and close without content', () => {
     const scenes = buildScenes(nebiyatDay, pickFocus(nebiyatDay, {}), 'example.com')
     expect(scenes.map((s) => s.type)).toEqual(['title', 'close'])

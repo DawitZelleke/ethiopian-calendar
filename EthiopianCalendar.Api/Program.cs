@@ -56,6 +56,17 @@ api.MapGet("/years/{year:int}", (int year) => Handle(() => new YearDto(
 api.MapGet("/years/{year:int}/bahire-hasab", (int year) =>
     Handle(() => BahireHasabDto.From(BahireHasab.Compute(year))));
 
+// The current or next occurrence of one fast or feast, e.g. /api/observances/tsome-nebiyat/next?from=2026-11-18
+api.MapGet("/observances/{id}/next", (string id, DateOnly? from) => HandleResult(() =>
+{
+    var today = EthiopianDate.FromGregorian(from ?? DateOnly.FromDateTime(DateTime.UtcNow));
+    var occurrence = ChurchCalendar.NextOccurrence(id, today);
+
+    return occurrence is null
+        ? TypedResults.NotFound()
+        : (IResult)TypedResults.Ok(OccurrenceDto.From(occurrence, today));
+}));
+
 // Conversions in both directions.
 api.MapGet("/convert/to-ethiopian/{date}", (DateOnly date) =>
     Handle(() => EthiopianDateDto.From(EthiopianDate.FromGregorian(date))));
@@ -74,11 +85,13 @@ app.Run();
 // Core throws ArgumentOutOfRangeException for any impossible date (Pagume 6 in a
 // non-leap year, month 14, a year out of range). That is the caller's mistake, so
 // it becomes a 400 Bad Request with a readable message instead of a 500 error.
-static IResult Handle<T>(Func<T> action)
+static IResult Handle<T>(Func<T> action) => HandleResult(() => TypedResults.Ok(action()));
+
+static IResult HandleResult(Func<IResult> action)
 {
     try
     {
-        return TypedResults.Ok(action());
+        return action();
     }
     catch (ArgumentOutOfRangeException ex)
     {

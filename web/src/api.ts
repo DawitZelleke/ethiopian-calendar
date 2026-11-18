@@ -62,6 +62,16 @@ export function calendarEvents(year: Year): Observance[] {
   )
 }
 
+export interface Occurrence {
+  id: string
+  name: string
+  start: EthiopianDate
+  end: EthiopianDate
+  lengthInDays: number
+  inProgress: boolean
+  dayNumber: number | null
+}
+
 async function getJson<T>(url: string): Promise<T> {
   const response = await fetch(url)
   if (!response.ok) {
@@ -72,6 +82,8 @@ async function getJson<T>(url: string): Promise<T> {
 
 export const fetchDay = (isoDate: string) => getJson<Day>(`/api/days/${isoDate}`)
 export const fetchYear = (year: number) => getJson<Year>(`/api/years/${year}`)
+export const fetchNextOccurrence = (id: string, fromIso: string) =>
+  getJson<Occurrence>(`/api/observances/${encodeURIComponent(id)}/next?from=${fromIso}`)
 
 /** Today's date in the viewer's own time zone, as yyyy-MM-dd. */
 export function todayIso(now = new Date()): string {

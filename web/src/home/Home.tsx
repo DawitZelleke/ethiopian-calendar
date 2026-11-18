@@ -71,10 +71,10 @@ export function Home() {
               return (
                 <li key={`${o.id}-${o.date.gregorian}`}>
                   <span className="when">{formatGregorian(o.date.gregorian)}</span>
-                  <span className="what">
+                  <a className="what" href={`/${o.id}`}>
                     {entry?.nameGeez && <span className="geez">{entry.nameGeez} </span>}
                     {o.name}
-                  </span>
+                  </a>
                   <span className="eth">{o.date.display}</span>
                 </li>
               )
