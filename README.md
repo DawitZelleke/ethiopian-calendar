@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/DawitZelleke/ethiopian-calendar/actions/workflows/ci.yml/badge.svg)
 
+**Live:** [ethiopian-calendar.onrender.com](https://ethiopian-calendar.onrender.com) · try [Tsome Nebiyat](https://ethiopian-calendar.onrender.com/tsome-nebiyat) or [Record Mode](https://ethiopian-calendar.onrender.com/record/2026-11-24)
+
 A C# / .NET 10 engine, REST API and React + TypeScript site that converts between the Ethiopian and Gregorian calendars and computes the feasts and fasts of the Ethiopian Orthodox Tewahedo Church using **Bahire Hasab**, the church's traditional calculation.
 
 I built it because the fasting calendar shapes my year, and most apps either skip the Ethiopian calendar or hard-code a few years of dates. This computes any year from the rules themselves.
@@ -83,7 +85,7 @@ Requires the .NET 10 SDK and Node 22.
 - [x] Fixed feasts and fasts, with weekly fast exceptions
 - [x] REST API
 - [x] Web UI with Record Mode for vertical video
-- [ ] Deployed publicly
+- [x] Deployed publicly (Docker on Render)
 - [ ] Content for every fast and feast, reviewed by a priest
 - [x] Shareable page per fast and feast
 - [ ] iCal subscription feed
