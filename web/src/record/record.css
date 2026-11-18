@@ -1,0 +1,261 @@
+/* Record Mode: a 1080x1920 canvas. All sizes are in canvas pixels. */
+
+.record-stage {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  overflow: hidden;
+  cursor: none; /* never show a cursor in a recording */
+}
+
+.record-canvas {
+  /* Centre the full-size canvas, then scale it to fit (see useCanvasScale). */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  background:
+    radial-gradient(1200px 900px at 50% 30%, rgba(242, 181, 68, 0.1), transparent 70%),
+    #0b0b0d;
+  color: #fff;
+  font-family: Inter, system-ui, sans-serif;
+  overflow: hidden;
+}
+
+/* Safe zones: platform UI covers the top 12%, the bottom 20%, and the right edge. */
+.safe-area {
+  position: absolute;
+  top: 230px;
+  bottom: 384px;
+  left: 80px;
+  right: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+.geez {
+  font-family: 'Noto Sans Ethiopic', Inter, sans-serif;
+}
+
+.scene {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 36px;
+  animation: scene-in 500ms ease-out;
+}
+
+@keyframes scene-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Each element fades and rises in when its beat is reached. */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  filter: blur(6px);
+  transition:
+    opacity 600ms ease-out,
+    transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 600ms ease-out;
+}
+
+.reveal.in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.scene-header {
+  display: flex;
+  gap: 24px;
+  align-items: baseline;
+  font-size: 36px;
+  color: #b9b3a8;
+  padding-bottom: 24px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Title scene */
+.eth-date {
+  font-size: 150px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.eth-year {
+  font-size: 48px;
+  color: #b9b3a8;
+  margin-top: 12px;
+}
+
+.greg-date {
+  font-size: 46px;
+  color: #e9e4da;
+}
+
+.name-block {
+  margin-top: 24px;
+}
+
+.kind-label {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #f2b544;
+}
+
+.name-geez {
+  font-size: 110px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-top: 16px;
+}
+
+.name-main {
+  font-size: 76px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.name-english {
+  font-size: 48px;
+  color: #e9e4da;
+  margin-top: 8px;
+}
+
+.progress-text {
+  font-size: 64px;
+  font-weight: 600;
+}
+
+.progress-text strong {
+  color: #f2b544;
+  font-weight: 800;
+}
+
+.progress-track {
+  height: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: #f2b544;
+  transition: width 1400ms cubic-bezier(0.2, 0.8, 0.2, 1) 300ms;
+}
+
+/* Text and list scenes */
+.body-text {
+  font-size: 60px;
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 0;
+}
+
+.body-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+.body-list li {
+  font-size: 54px;
+  line-height: 1.25;
+  font-weight: 600;
+  padding-left: 48px;
+  position: relative;
+}
+
+.body-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f2b544;
+}
+
+/* Close scene */
+.scene-close {
+  align-items: flex-start;
+}
+
+.close-line {
+  font-size: 72px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.close-url {
+  font-size: 52px;
+  color: #f2b544;
+  font-weight: 600;
+  margin: 0;
+}
+
+.record-error {
+  font-size: 40px;
+  color: #ff8a80;
+}
+
+/* Safe-zone guides (G key) */
+.guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-size: 28px;
+  color: #fff;
+}
+
+.guide {
+  position: absolute;
+  background: rgba(255, 60, 60, 0.28);
+  display: grid;
+  place-items: center;
+}
+
+.guide-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 230px;
+}
+
+.guide-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 384px;
+}
+
+.guide-right {
+  top: 230px;
+  bottom: 384px;
+  right: 0;
+  width: 150px;
+}
+
+.guide-draft {
+  position: absolute;
+  top: 80px;
+  left: 80px;
+  padding: 12px 20px;
+  background: #ff3c3c;
+  font-weight: 800;
+}

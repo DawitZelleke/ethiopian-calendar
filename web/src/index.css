@@ -1,0 +1,23 @@
+:root {
+  --bg: #0b0b0d;
+  --surface: #16161a;
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #f5f2ec;
+  --muted: #a9a398;
+  --accent: #f2b544;
+
+  color-scheme: dark;
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}

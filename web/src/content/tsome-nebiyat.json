@@ -1,0 +1,21 @@
+{
+  "id": "tsome-nebiyat",
+  "nameEnglish": "Fast of the Prophets",
+  "nameGeez": "ጾመ ነቢያት",
+  "transliteration": "Tsome Nebiyat",
+  "type": "fast",
+  "movable": false,
+  "abstainFrom": "Meat, dairy and eggs",
+  "whatItIs": "The fast that prepares for Genna, Ethiopian Christmas. It runs from Hidar 15 until the eve of Genna.",
+  "whyItMatters": "It honours the prophets of the Old Testament, who waited and fasted for the coming of the Messiah. The church waits with them before celebrating His birth.",
+  "whatPeopleDo": [
+    "Meals are fully plant-based: no meat, dairy or eggs",
+    "Many wait until midday or later before eating on weekdays",
+    "The fast ends with the Genna celebration on January 7"
+  ],
+  "sources": [],
+  "review": {
+    "reviewed": false,
+    "notes": "DRAFT. Confirm with a priest: the meaning and history, why the fast is often called 40 days when it runs 43-44, and the weekday eating time."
+  }
+}
