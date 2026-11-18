@@ -1,7 +1,7 @@
 namespace EthiopianCalendar.Core;
 
 /// <summary>A named fast that runs every day from Start to End, inclusive.</summary>
-public sealed record FastPeriod(string Name, EthiopianDate Start, EthiopianDate End)
+public sealed record FastPeriod(string Id, string Name, EthiopianDate Start, EthiopianDate End)
 {
     public bool Contains(EthiopianDate date)
     {
@@ -10,7 +10,13 @@ public sealed record FastPeriod(string Name, EthiopianDate Start, EthiopianDate 
     }
 
     public int LengthInDays => End.ToJulianDayNumber() - Start.ToJulianDayNumber() + 1;
+
+    /// <summary>1 on the first day of the fast, LengthInDays on the last.</summary>
+    public int DayNumberOf(EthiopianDate date) => date.ToJulianDayNumber() - Start.ToJulianDayNumber() + 1;
 }
+
+/// <summary>One fast in effect on a given day, with progress: "Day 3 of 44".</summary>
+public sealed record FastDay(string Id, string Name, int DayNumber, int TotalDays);
 
 /// <summary>
 /// Fixed feasts and the full fasting calendar for an Ethiopian year.
@@ -24,6 +30,7 @@ public sealed record FastPeriod(string Name, EthiopianDate Start, EthiopianDate 
 /// </summary>
 public static class FastingCalendar
 {
+    public const string WeeklyFastId = "tsome-dihnet";
     public const string WeeklyFastName = "Wednesday and Friday fast (Tsome Dihnet)";
 
     private const int Tahsas = 4, Tir = 5, Hamle = 11, Nehase = 12, Hidar = 3, Meskerem = 1;
@@ -39,12 +46,13 @@ public static class FastingCalendar
 
     public static IReadOnlyList<Observance> FixedFeasts(int year) =>
     [
-        new("Enkutatash (New Year)", ObservanceKind.Feast, new EthiopianDate(year, Meskerem, 1)),
-        new("Meskel (Finding of the True Cross)", ObservanceKind.Feast, new EthiopianDate(year, Meskerem, 17)),
-        new("Genna (Christmas)", ObservanceKind.Feast, Genna(year)),
-        new("Timkat (Epiphany)", ObservanceKind.Feast, Timkat(year)),
-        new("Feast of Peter and Paul", ObservanceKind.Feast, new EthiopianDate(year, Hamle, 5)),
-        new("Filseta (Assumption of Mary)", ObservanceKind.Feast, new EthiopianDate(year, Nehase, 16)),
+        new("enkutatash", "Enkutatash (New Year)", ObservanceKind.Feast, new EthiopianDate(year, Meskerem, 1)),
+        new("meskel", "Meskel (Finding of the True Cross)", ObservanceKind.Feast, new EthiopianDate(year, Meskerem, 17)),
+        new("hidar-tsion", "Hidar Tsion (St. Mary of Zion)", ObservanceKind.SaintsDay, new EthiopianDate(year, Hidar, 21)),
+        new("genna", "Genna (Christmas)", ObservanceKind.Feast, Genna(year)),
+        new("timkat", "Timkat (Epiphany)", ObservanceKind.Feast, Timkat(year)),
+        new("peter-and-paul", "Feast of Peter and Paul", ObservanceKind.Feast, new EthiopianDate(year, Hamle, 5)),
+        new("filseta", "Filseta (Assumption of Mary)", ObservanceKind.Feast, new EthiopianDate(year, Nehase, 16)),
     ];
 
     public static IReadOnlyList<FastPeriod> FastPeriods(int year)
@@ -53,30 +61,34 @@ public static class FastingCalendar
 
         return
         [
-            new("Tsome Nebiyat (Fast of the Prophets)", new EthiopianDate(year, Hidar, 15), Genna(year).AddDays(-1)),
-            new("Gehad of Timkat", Timkat(year).AddDays(-1), Timkat(year).AddDays(-1)),
-            new("Tsome Nenewe (Fast of Nineveh)", nineveh, nineveh.AddDays(2)),
-            new("Abiy Tsom (Great Lent)", nineveh.AddDays(14), nineveh.AddDays(MoveableFeasts.FasikaOffset - 1)),
-            new("Tsome Hawaryat (Fast of the Apostles)", nineveh.AddDays(119), new EthiopianDate(year, Hamle, 4)),
-            new("Tsome Filseta (Fast of the Assumption)", new EthiopianDate(year, Nehase, 1), new EthiopianDate(year, Nehase, 15)),
+            new("tsome-nebiyat", "Tsome Nebiyat (Fast of the Prophets)", new EthiopianDate(year, Hidar, 15), Genna(year).AddDays(-1)),
+            new("gehad-timkat", "Gehad of Timkat", Timkat(year).AddDays(-1), Timkat(year).AddDays(-1)),
+            new("tsome-nenewe", "Tsome Nenewe (Fast of Nineveh)", nineveh, nineveh.AddDays(2)),
+            new("abiy-tsom", "Abiy Tsom (Great Lent)", nineveh.AddDays(14), nineveh.AddDays(MoveableFeasts.FasikaOffset - 1)),
+            new("tsome-hawaryat", "Tsome Hawaryat (Fast of the Apostles)", nineveh.AddDays(119), new EthiopianDate(year, Hamle, 4)),
+            new("tsome-filseta", "Tsome Filseta (Fast of the Assumption)", new EthiopianDate(year, Nehase, 1), new EthiopianDate(year, Nehase, 15)),
         ];
     }
 
-    /// <summary>Every fast in effect on this date. Empty means it is not a fast day.</summary>
-    public static IReadOnlyList<string> FastsOn(EthiopianDate date)
+    /// <summary>Every fast in effect on this date, with progress. Empty means it is not a fast day.</summary>
+    public static IReadOnlyList<FastDay> FastDaysOn(EthiopianDate date)
     {
         var named = FastPeriods(date.Year)
             .Where(p => p.Contains(date))
-            .Select(p => p.Name)
+            .Select(p => new FastDay(p.Id, p.Name, p.DayNumberOf(date), p.LengthInDays))
             .ToList();
 
         if (named.Count > 0)
             return named;
 
-        return IsWeeklyFastDay(date) ? [WeeklyFastName] : [];
+        return IsWeeklyFastDay(date) ? [new FastDay(WeeklyFastId, WeeklyFastName, 1, 1)] : [];
     }
 
-    public static bool IsFastDay(EthiopianDate date) => FastsOn(date).Count > 0;
+    /// <summary>The names of every fast in effect on this date.</summary>
+    public static IReadOnlyList<string> FastsOn(EthiopianDate date) =>
+        FastDaysOn(date).Select(f => f.Name).ToList();
+
+    public static bool IsFastDay(EthiopianDate date) => FastDaysOn(date).Count > 0;
 
     private static bool IsWeeklyFastDay(EthiopianDate date)
     {
@@ -85,7 +97,7 @@ public static class FastingCalendar
 
         // Exception a: no fasting in the 50 days from Fasika to Paraclete.
         var nineveh = BahireHasab.Compute(date.Year).Nineveh;
-        var fiftyDays = new FastPeriod("Fifty days", nineveh.AddDays(MoveableFeasts.FasikaOffset), nineveh.AddDays(118));
+        var fiftyDays = new FastPeriod("fifty-days", "Fifty days", nineveh.AddDays(MoveableFeasts.FasikaOffset), nineveh.AddDays(118));
         if (fiftyDays.Contains(date))
             return false;
 

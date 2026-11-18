@@ -12,22 +12,27 @@ public sealed record EthiopianDateDto(
         new(date.Year, date.Month, date.Day, date.MonthName, date.ToString(), date.ToGregorian());
 }
 
-public sealed record ObservanceDto(string Name, ObservanceKind Kind, EthiopianDateDto Date)
+public sealed record ObservanceDto(string Id, string Name, ObservanceKind Kind, EthiopianDateDto Date)
 {
-    public static ObservanceDto From(Observance o) => new(o.Name, o.Kind, EthiopianDateDto.From(o.Date));
+    public static ObservanceDto From(Observance o) => new(o.Id, o.Name, o.Kind, EthiopianDateDto.From(o.Date));
 }
 
-public sealed record FastPeriodDto(string Name, EthiopianDateDto Start, EthiopianDateDto End, int LengthInDays)
+public sealed record FastDayDto(string Id, string Name, int DayNumber, int TotalDays)
+{
+    public static FastDayDto From(FastDay f) => new(f.Id, f.Name, f.DayNumber, f.TotalDays);
+}
+
+public sealed record FastPeriodDto(string Id, string Name, EthiopianDateDto Start, EthiopianDateDto End, int LengthInDays)
 {
     public static FastPeriodDto From(FastPeriod p) =>
-        new(p.Name, EthiopianDateDto.From(p.Start), EthiopianDateDto.From(p.End), p.LengthInDays);
+        new(p.Id, p.Name, EthiopianDateDto.From(p.Start), EthiopianDateDto.From(p.End), p.LengthInDays);
 }
 
 public sealed record DayDto(
     EthiopianDateDto Date,
     DayOfWeek DayOfWeek,
     bool IsFastDay,
-    IReadOnlyList<string> Fasts,
+    IReadOnlyList<FastDayDto> Fasts,
     IReadOnlyList<ObservanceDto> Observances);
 
 public sealed record YearDto(

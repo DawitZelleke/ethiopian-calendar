@@ -31,7 +31,7 @@ api.MapGet("/days/{date}", (DateOnly date) => Handle(() =>
         EthiopianDateDto.From(ethiopian),
         ethiopian.DayOfWeek,
         FastingCalendar.IsFastDay(ethiopian),
-        FastingCalendar.FastsOn(ethiopian),
+        FastingCalendar.FastDaysOn(ethiopian).Select(FastDayDto.From).ToList(),
         ChurchCalendar.ObservancesOn(ethiopian).Select(ObservanceDto.From).ToList());
 }));
 

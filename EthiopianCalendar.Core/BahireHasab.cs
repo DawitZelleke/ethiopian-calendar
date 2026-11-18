@@ -72,7 +72,7 @@ public static class BahireHasab
         var nineveh = Compute(year).Nineveh;
 
         return MoveableFeasts.All
-            .Select(f => new Observance(f.Name, f.Kind, nineveh.AddDays(f.DaysAfterNineveh)))
+            .Select(f => new Observance(f.Id, f.Name, f.Kind, nineveh.AddDays(f.DaysAfterNineveh)))
             .ToList();
     }
 

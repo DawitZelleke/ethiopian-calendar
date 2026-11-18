@@ -38,7 +38,19 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
 
         Assert.NotNull(day);
         Assert.True(day.IsFastDay);
-        Assert.Contains(day.Fasts, f => f.StartsWith("Abiy Tsom"));
+        Assert.Contains(day.Fasts, f => f.Id == "abiy-tsom" && f.TotalDays == 55);
+    }
+
+    [Fact]
+    public async Task Day_FirstDayOfNebiyat_ShowsProgress()
+    {
+        var day = await _client.GetFromJsonAsync<DayDto>("/api/days/2026-11-24", Json);
+
+        Assert.NotNull(day);
+        var nebiyat = Assert.Single(day.Fasts);
+        Assert.Equal("tsome-nebiyat", nebiyat.Id);
+        Assert.Equal(1, nebiyat.DayNumber);
+        Assert.Equal(44, nebiyat.TotalDays);
     }
 
     [Fact]

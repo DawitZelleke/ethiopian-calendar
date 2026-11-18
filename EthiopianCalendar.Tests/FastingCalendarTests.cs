@@ -102,4 +102,43 @@ public class FastingCalendarTests
         Assert.Equal(new DateOnly(2026, 1, 7), Of("Genna"));
         Assert.Equal(new DateOnly(2026, 1, 19), Of("Timkat"));
     }
+
+    [Fact]
+    public void HidarTsion_2019_IsNovember30_2026()
+    {
+        var hidarTsion = FastingCalendar.FixedFeasts(2019).Single(f => f.Id == "hidar-tsion");
+
+        Assert.Equal(new DateOnly(2026, 11, 30), hidarTsion.Date.ToGregorian());
+        Assert.Equal(ObservanceKind.SaintsDay, hidarTsion.Kind);
+    }
+
+    [Theory]
+    [InlineData(2026, 11, 24, 1)]    // first day of Tsome Nebiyat
+    [InlineData(2026, 11, 30, 7)]    // Hidar Tsion falls inside the fast
+    [InlineData(2027, 1, 6, 44)]     // last day, the eve of Genna
+    public void FastDaysOn_Nebiyat_ReportsDayXOf44(int gy, int gm, int gd, int expectedDay)
+    {
+        var fast = Assert.Single(FastingCalendar.FastDaysOn(Eth(gy, gm, gd)));
+
+        Assert.Equal("tsome-nebiyat", fast.Id);
+        Assert.Equal(expectedDay, fast.DayNumber);
+        Assert.Equal(44, fast.TotalDays);
+    }
+
+    [Fact]
+    public void FastDaysOn_WeeklyFast_IsDay1Of1()
+    {
+        var fast = Assert.Single(FastingCalendar.FastDaysOn(Eth(2025, 10, 1)));
+
+        Assert.Equal(FastingCalendar.WeeklyFastId, fast.Id);
+        Assert.Equal(1, fast.TotalDays);
+    }
+
+    [Fact]
+    public void ObservanceIds_AreUniqueWithinAYear()
+    {
+        var ids = ChurchCalendar.Observances(2019).Select(o => o.Id).ToList();
+
+        Assert.Equal(ids.Count, ids.Distinct().Count());
+    }
 }
