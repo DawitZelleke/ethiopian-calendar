@@ -174,10 +174,21 @@ function SceneView({ scene, step }: { scene: Scene; step: number }) {
       return (
         <div className="scene scene-close">
           <p className="close-line reveal in">{scene.line}</p>
-          <p className="close-url reveal in">{scene.url}</p>
+          <p className="close-url reveal in">
+            {/* Site and page on separate lines, so the URL never breaks mid-word. */}
+            {splitUrl(scene.url).map((part) => (
+              <span key={part}>{part}</span>
+            ))}
+          </p>
         </div>
       )
   }
+}
+
+/** "site.com/tsome-nebiyat" -> ["site.com", "/tsome-nebiyat"] */
+function splitUrl(url: string): string[] {
+  const slash = url.indexOf('/')
+  return slash === -1 ? [url] : [url.slice(0, slash), url.slice(slash)]
 }
 
 /** Safe-zone overlay (press G). Shows where platform UI covers the video. Never record with it on. */
