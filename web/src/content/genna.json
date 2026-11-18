@@ -1,0 +1,20 @@
+{
+  "id": "genna",
+  "nameEnglish": "Ethiopian Christmas",
+  "nameGeez": "ገና",
+  "transliteration": "Genna",
+  "type": "feast",
+  "movable": false,
+  "whatItIs": "Ethiopian Christmas, the celebration of Christ's birth. It ends Tsome Nebiyat, the Fast of the Prophets.",
+  "whyItMatters": "It celebrates the birth the prophets waited for. After weeks of fasting with them, the church celebrates what they foretold.",
+  "whatPeopleDo": [
+    "Many attend a church service that runs through the night before",
+    "People wear white traditional clothing, like the netela",
+    "The fast is broken with a celebration meal, often doro wat"
+  ],
+  "sources": [],
+  "review": {
+    "reviewed": false,
+    "notes": "DRAFT. Confirm with mother or priest: the night service, the clothing, the foods, and whether to mention the traditional game of genna."
+  }
+}

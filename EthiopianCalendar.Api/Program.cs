@@ -26,6 +26,13 @@ app.UseStaticFiles();
 
 var api = app.MapGroup("/api");
 
+// Health check for the hosting platform: confirms the app started and the engine works.
+api.MapGet("/health", () => TypedResults.Ok(new
+{
+    status = "ok",
+    today = EthiopianDateDto.From(EthiopianDate.FromGregorian(DateOnly.FromDateTime(DateTime.UtcNow))).Display,
+}));
+
 // One day: its Ethiopian date, whether it is a fast day and why, and any feasts.
 api.MapGet("/days/{date}", (DateOnly date) => Handle(() =>
 {
