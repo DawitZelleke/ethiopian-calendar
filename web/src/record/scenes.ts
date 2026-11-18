@@ -101,7 +101,9 @@ export function buildScenes(day: Day, focus: Focus | undefined, siteUrl: string)
     }
   }
 
-  scenes.push({ type: 'close', line: "I'm learning these one by one. Follow along.", url: siteUrl })
+  // Point viewers at the page for this exact fast or feast, if it has written content.
+  const url = entry ? `${siteUrl}/${entry.id}` : siteUrl
+  scenes.push({ type: 'close', line: "I'm learning these one by one. Follow along.", url })
   return scenes
 }
 

@@ -86,6 +86,12 @@
 .upcoming .what {
   font-size: 18px;
   font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.upcoming .what:hover {
+  color: var(--accent);
 }
 
 .upcoming .eth {

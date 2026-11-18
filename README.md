@@ -15,7 +15,7 @@ I built it because the fasting calendar shapes my year, and most apps either ski
 
 ## The site and Record Mode
 
-The React + TypeScript site (in `web/`) shows today's Ethiopian date, whether it's a fast day ("Day 1 of 44"), and what's coming up.
+The React + TypeScript site (in `web/`) shows today's Ethiopian date, whether it's a fast day ("Day 1 of 44"), and what's coming up. Each fast and feast has its own page (`/tsome-nebiyat`, `/genna`) with when it next happens and what it means. That's where the videos send viewers.
 
 **Record Mode** (`/record/2026-11-24`) is a fixed 1080×1920 (9:16) canvas built for screen-recording short vertical videos about each fast and feast:
 
@@ -31,6 +31,7 @@ The React + TypeScript site (in `web/`) shows today's Ethiopian date, whether it
 | `GET /api/days/{yyyy-MM-dd}` | The Ethiopian date, whether it's a fast day and which fast, and any feasts |
 | `GET /api/years/{year}` | Every feast and fast period in an Ethiopian year |
 | `GET /api/years/{year}/bahire-hasab` | The Bahire Hasab working for a year, step by step |
+| `GET /api/observances/{id}/next?from={yyyy-MM-dd}` | The current or next occurrence of one fast or feast, with "Day X of Y" if it's in progress |
 | `GET /api/convert/to-ethiopian/{yyyy-MM-dd}` | Gregorian → Ethiopian |
 | `GET /api/convert/to-gregorian/{year}/{month}/{day}` | Ethiopian → Gregorian |
 
@@ -84,5 +85,5 @@ Requires the .NET 10 SDK and Node 22.
 - [x] Web UI with Record Mode for vertical video
 - [ ] Deployed publicly
 - [ ] Content for every fast and feast, reviewed by a priest
-- [ ] Shareable page per fast and feast
+- [x] Shareable page per fast and feast
 - [ ] iCal subscription feed
