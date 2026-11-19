@@ -31,16 +31,33 @@ public static class ChurchCalendar
         int fromDay = from.ToJulianDayNumber();
 
         return new[] { from.Year, from.Year + 1 }
-            .SelectMany(OccurrencesIn)
+            .SelectMany(Occurrences)
             .Where(o => o.Id == id && o.End.ToJulianDayNumber() >= fromDay)
-            .OrderBy(o => o.Start.ToJulianDayNumber())
-            .ThenByDescending(o => o.LengthInDays) // a fast period beats the one-day "fast begins" marker
             .FirstOrDefault();
     }
 
-    private static IEnumerable<Occurrence> OccurrencesIn(int year) =>
-        FastingCalendar.FastPeriods(year).Select(p => new Occurrence(p.Id, p.Name, p.Start, p.End))
-            .Concat(Observances(year).Select(o => new Occurrence(o.Id, o.Name, o.Date, o.Date)));
+    /// <summary>
+    /// Every fast (as one multi-day occurrence) and every feast in an Ethiopian year, in date order.
+    /// A movable fast such as Abiy Tsom is both a fast period and a one-day "begins" observance;
+    /// only the full fast period is kept.
+    /// </summary>
+    public static IReadOnlyList<Occurrence> Occurrences(int year)
+    {
+        var fasts = FastingCalendar.FastPeriods(year)
+            .Select(p => new Occurrence(p.Id, p.Name, p.Start, p.End))
+            .ToList();
+
+        var fastStarts = fasts.Select(f => (f.Id, f.Start)).ToHashSet();
+
+        var feasts = Observances(year)
+            .Where(o => !fastStarts.Contains((o.Id, o.Date)))
+            .Select(o => new Occurrence(o.Id, o.Name, o.Date, o.Date));
+
+        return fasts.Concat(feasts)
+            .OrderBy(o => o.Start.ToJulianDayNumber())
+            .ThenByDescending(o => o.LengthInDays)
+            .ToList();
+    }
 
     /// <summary>The observances that fall on one specific date.</summary>
     public static IReadOnlyList<Observance> ObservancesOn(EthiopianDate date) =>

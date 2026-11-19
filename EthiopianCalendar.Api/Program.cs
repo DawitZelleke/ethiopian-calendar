@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using EthiopianCalendar.Api;
 using EthiopianCalendar.Core;
+using EthiopianCalendar.Core.Ics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,20 @@ api.MapGet("/convert/to-ethiopian/{date}", (DateOnly date) =>
 api.MapGet("/convert/to-gregorian/{year:int}/{month:int}/{day:int}", (int year, int month, int day) =>
     Handle(() => EthiopianDateDto.From(new EthiopianDate(year, month, day))));
 
+// Calendar subscription feed for Google, Apple and Outlook calendars.
+// /calendar.ics has every fast and feast for three years; ?weekly=true adds Wednesday and Friday fasts.
+// HEAD too: some calendar apps (Outlook among them) check the feed with HEAD before subscribing.
+app.MapMethods("/calendar.ics", ["GET", "HEAD"], (HttpContext http, IConfiguration config, bool? weekly) =>
+{
+    var today = EthiopianDate.FromGregorian(DateOnly.FromDateTime(DateTime.UtcNow));
+    var events = CalendarFeed.Events(today.Year, years: 3, weekly ?? false, SiteUrl(http, config));
+
+    http.Response.Headers.CacheControl = "public, max-age=3600";
+    return TypedResults.Text(
+        IcsWriter.Write(CalendarFeed.CalendarName, events, DateTimeOffset.UtcNow),
+        "text/calendar; charset=utf-8");
+});
+
 // Unknown /api routes are a 404, not the website.
 api.MapFallback(() => TypedResults.NotFound());
 
@@ -101,6 +116,11 @@ static IResult HandleResult(Func<IResult> action)
             statusCode: StatusCodes.Status400BadRequest);
     }
 }
+
+// The public address used in links (e.g. inside calendar events). Set SiteUrl in production,
+// because behind a hosting proxy the request itself may look like plain http.
+static string SiteUrl(HttpContext http, IConfiguration config) =>
+    config["SiteUrl"]?.TrimEnd('/') ?? $"{http.Request.Scheme}://{http.Request.Host}";
 
 // Lets the integration tests start this app in memory.
 public partial class Program;
