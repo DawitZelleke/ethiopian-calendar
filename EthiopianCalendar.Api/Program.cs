@@ -76,12 +76,12 @@ api.MapGet("/convert/to-gregorian/{year:int}/{month:int}/{day:int}", (int year, 
     Handle(() => EthiopianDateDto.From(new EthiopianDate(year, month, day))));
 
 // Calendar subscription feed for Google, Apple and Outlook calendars.
-// /calendar.ics has every fast and feast for three years; ?weekly=true adds Wednesday and Friday fasts.
+// /calendar.ics has every fast and feast for three years, including every Wednesday and Friday fast.
 // HEAD too: some calendar apps (Outlook among them) check the feed with HEAD before subscribing.
-app.MapMethods("/calendar.ics", ["GET", "HEAD"], (HttpContext http, IConfiguration config, bool? weekly) =>
+app.MapMethods("/calendar.ics", ["GET", "HEAD"], (HttpContext http, IConfiguration config) =>
 {
     var today = EthiopianDate.FromGregorian(DateOnly.FromDateTime(DateTime.UtcNow));
-    var events = CalendarFeed.Events(today.Year, years: 3, weekly ?? false, SiteUrl(http, config));
+    var events = CalendarFeed.Events(today.Year, years: 3, SiteUrl(http, config));
 
     http.Response.Headers.CacheControl = "public, max-age=3600";
     return TypedResults.Text(

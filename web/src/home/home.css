@@ -154,12 +154,3 @@
   background: transparent;
   color: var(--accent);
 }
-
-.subscribe-option {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  margin-top: 16px;
-  font-size: 14px;
-  color: var(--muted);
-}

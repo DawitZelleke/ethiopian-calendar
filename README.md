@@ -35,7 +35,7 @@ The React + TypeScript site (in `web/`) shows today's Ethiopian date, whether it
 | `GET /api/years/{year}/bahire-hasab` | The Bahire Hasab working for a year, step by step |
 | `GET /api/observances/{id}/next?from={yyyy-MM-dd}` | The current or next occurrence of one fast or feast, with "Day X of Y" if it's in progress |
 | `GET /api/convert/to-ethiopian/{yyyy-MM-dd}` | Gregorian → Ethiopian |
-| `GET /calendar.ics` | iCalendar feed of every fast and feast for three years, for Google, Apple and Outlook calendars. Add `?weekly=true` for every Wednesday and Friday fast. |
+| `GET /calendar.ics` | iCalendar feed of every fast and feast for three years, including every Wednesday and Friday fast, for Google, Apple and Outlook calendars |
 | `GET /api/convert/to-gregorian/{year}/{month}/{day}` | Ethiopian → Gregorian |
 
 Invalid input (for example Pagume 6 in a non-leap year) returns `400 Bad Request` with a readable problem-details message, never a server error.
