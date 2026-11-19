@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { calendarEvents, fetchDay, fetchYear, formatGregorian, todayIso, type Day, type Observance } from '../api'
 import { entries } from '../content'
 import './home.css'
+import { Subscribe } from './Subscribe'
 
 export function Home() {
   const [today, setToday] = useState<Day>()
@@ -82,6 +83,8 @@ export function Home() {
           </ul>
         </section>
       )}
+
+      <Subscribe />
 
       <footer>
         Dates are computed with Bahire Hasab, the church's traditional calculation.{' '}

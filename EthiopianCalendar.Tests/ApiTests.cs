@@ -158,6 +158,38 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
     }
 
     [Fact]
+    public async Task CalendarFeed_IsValidICalendarWithNebiyat()
+    {
+        var response = await _client.GetAsync("/calendar.ics");
+        var body = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("text/calendar", response.Content.Headers.ContentType?.MediaType);
+        Assert.StartsWith("BEGIN:VCALENDAR", body);
+        Assert.Contains("SUMMARY:Tsome Nebiyat (Fast of the Prophets)", body);
+    }
+
+    [Fact]
+    public async Task CalendarFeed_AnswersHeadRequests()
+    {
+        var response = await _client.SendAsync(new HttpRequestMessage(HttpMethod.Head, "/calendar.ics"));
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("text/calendar", response.Content.Headers.ContentType?.MediaType);
+    }
+
+    [Fact]
+    public async Task CalendarFeed_WeeklyOption_AddsWednesdayAndFridayFasts()
+    {
+        int Count(string ics) => ics.Split("BEGIN:VEVENT").Length - 1;
+
+        string plain = await _client.GetStringAsync("/calendar.ics");
+        string weekly = await _client.GetStringAsync("/calendar.ics?weekly=true");
+
+        Assert.True(Count(weekly) > Count(plain) + 100);
+    }
+
+    [Fact]
     public async Task Health_ReturnsOk()
     {
         var response = await _client.GetAsync("/api/health");

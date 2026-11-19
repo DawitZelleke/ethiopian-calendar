@@ -35,6 +35,7 @@ The React + TypeScript site (in `web/`) shows today's Ethiopian date, whether it
 | `GET /api/years/{year}/bahire-hasab` | The Bahire Hasab working for a year, step by step |
 | `GET /api/observances/{id}/next?from={yyyy-MM-dd}` | The current or next occurrence of one fast or feast, with "Day X of Y" if it's in progress |
 | `GET /api/convert/to-ethiopian/{yyyy-MM-dd}` | Gregorian → Ethiopian |
+| `GET /calendar.ics` | iCalendar feed of every fast and feast for three years, for Google, Apple and Outlook calendars. Add `?weekly=true` for every Wednesday and Friday fast. |
 | `GET /api/convert/to-gregorian/{year}/{month}/{day}` | Ethiopian → Gregorian |
 
 Invalid input (for example Pagume 6 in a non-leap year) returns `400 Bad Request` with a readable problem-details message, never a server error.
@@ -48,6 +49,7 @@ Invalid input (for example Pagume 6 in a non-leap year) returns `400 Bad Request
 - **Calendar drift:** Genna is January 7 only from 1901 to 2100, because the Julian and Gregorian calendars drift apart at century years. The tests cover both edges.
 - **Fasting rules confirmed against practice:** no fasting on Wednesdays and Fridays in the 50 days after Fasika, and none when Genna or Timkat falls on those days.
 - **API integration tests** call the real endpoints over HTTP, including invalid input.
+- **Calendar feed:** follows RFC 5545 (CRLF line endings, lines folded at 75 bytes without splitting multi-byte Ge'ez characters, escaped text), and was checked with an independent iCalendar parser. Event UIDs are stable, so subscribed calendars update instead of duplicating events.
 
 ## Run it
 
@@ -88,4 +90,4 @@ Requires the .NET 10 SDK and Node 22.
 - [x] Deployed publicly (Docker on Render)
 - [ ] Content for every fast and feast, reviewed by a priest
 - [x] Shareable page per fast and feast
-- [ ] iCal subscription feed
+- [x] iCal subscription feed
