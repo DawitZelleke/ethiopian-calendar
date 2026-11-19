@@ -179,14 +179,12 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
     }
 
     [Fact]
-    public async Task CalendarFeed_WeeklyOption_AddsWednesdayAndFridayFasts()
+    public async Task CalendarFeed_IncludesWednesdayAndFridayFasts_WithoutAnyOption()
     {
-        int Count(string ics) => ics.Split("BEGIN:VEVENT").Length - 1;
+        string ics = await _client.GetStringAsync("/calendar.ics");
 
-        string plain = await _client.GetStringAsync("/calendar.ics");
-        string weekly = await _client.GetStringAsync("/calendar.ics?weekly=true");
-
-        Assert.True(Count(weekly) > Count(plain) + 100);
+        Assert.Contains("SUMMARY:Wednesday fast (Tsome Dihnet)", ics);
+        Assert.Contains("SUMMARY:Friday fast (Tsome Dihnet)", ics);
     }
 
     [Fact]

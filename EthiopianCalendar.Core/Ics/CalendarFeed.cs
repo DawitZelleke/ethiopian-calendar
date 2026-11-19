@@ -1,15 +1,17 @@
 namespace EthiopianCalendar.Core.Ics;
 
-/// <summary>Turns the church calendar into iCalendar events.</summary>
+/// <summary>
+/// Turns the church calendar into iCalendar events: every named fast and feast,
+/// plus every Wednesday and Friday fast (with its exceptions).
+/// </summary>
 public static class CalendarFeed
 {
     public const string CalendarName = "Ethiopian Orthodox Calendar";
 
     /// <param name="fromYear">The first Ethiopian year to include.</param>
     /// <param name="years">How many Ethiopian years to include.</param>
-    /// <param name="includeWeeklyFasts">Add every Wednesday and Friday fast (about 100 events a year).</param>
     /// <param name="siteUrl">Base URL for links to each observance's page, e.g. https://example.com</param>
-    public static IReadOnlyList<CalendarEvent> Events(int fromYear, int years, bool includeWeeklyFasts, string siteUrl)
+    public static IReadOnlyList<CalendarEvent> Events(int fromYear, int years, string siteUrl)
     {
         var events = new List<CalendarEvent>();
 
@@ -17,8 +19,8 @@ public static class CalendarFeed
         {
             events.AddRange(ChurchCalendar.Occurrences(year).Select(o => ToEvent(o, siteUrl)));
 
-            if (includeWeeklyFasts)
-                events.AddRange(WeeklyFasts(year, siteUrl));
+            // Always included: the Wednesday and Friday fasts shape daily life as much as the named fasts do.
+            events.AddRange(WeeklyFasts(year, siteUrl));
         }
 
         return events.OrderBy(e => e.Start).ToList();

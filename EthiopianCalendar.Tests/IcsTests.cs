@@ -66,8 +66,8 @@ public class IcsWriterTests
 
 public class CalendarFeedTests
 {
-    private static IReadOnlyList<CalendarEvent> Feed(bool weekly = false) =>
-        CalendarFeed.Events(2019, years: 1, includeWeeklyFasts: weekly, siteUrl: "https://example.com");
+    private static IReadOnlyList<CalendarEvent> Feed() =>
+        CalendarFeed.Events(2019, years: 1, siteUrl: "https://example.com");
 
     [Fact]
     public void Nebiyat_IsOneMultiDayEvent()
@@ -90,27 +90,37 @@ public class CalendarFeedTests
     [Fact]
     public void Uids_AreUnique_AndStable()
     {
-        var uids = Feed(weekly: true).Select(e => e.Uid).ToList();
+        var uids = Feed().Select(e => e.Uid).ToList();
 
         Assert.Equal(uids.Count, uids.Distinct().Count());
-        Assert.Equal(uids, Feed(weekly: true).Select(e => e.Uid)); // same input, same UIDs
+        Assert.Equal(uids, Feed().Select(e => e.Uid)); // same input, same UIDs
     }
 
     [Fact]
-    public void WeeklyFasts_AreOnlyAddedWhenAskedFor_AndAreWednesdaysOrFridays()
+    public void WeeklyFasts_AreAlwaysIncluded_AndAreWednesdaysOrFridays()
     {
-        var weekly = Feed(weekly: true).Where(e => e.Uid.StartsWith(FastingCalendar.WeeklyFastId + "-2")).ToList();
+        var weekly = Feed().Where(e => e.Uid.StartsWith(FastingCalendar.WeeklyFastId + "-2")).ToList();
 
-        Assert.DoesNotContain(Feed(), e => e.Summary.EndsWith("fast (Tsome Dihnet)"));
-        Assert.NotEmpty(weekly);
+        Assert.True(weekly.Count > 50, $"only {weekly.Count} weekly fasts in a year");
         Assert.All(weekly, e => Assert.Contains(e.Start.DayOfWeek, new[] { DayOfWeek.Wednesday, DayOfWeek.Friday }));
+    }
+
+    [Fact]
+    public void WeeklyFasts_SkipTheFiftyDaysAfterFasika()
+    {
+        // Fasika 2027 is May 2 and Paraclete is June 20: no Wednesday or Friday fasts in between.
+        var fasika = new DateOnly(2027, 5, 2);
+        var paraclete = new DateOnly(2027, 6, 20);
+
+        Assert.DoesNotContain(Feed(), e =>
+            e.Summary.EndsWith("fast (Tsome Dihnet)") && e.Start >= fasika && e.Start <= paraclete);
     }
 
     [Fact]
     public void WeeklyFasts_SkipGenna_WhenItFallsOnAWednesday()
     {
         // Genna 2026 (January 7) was a Wednesday. The feast overrides the weekly fast.
-        var events = CalendarFeed.Events(2018, years: 1, includeWeeklyFasts: true, siteUrl: "https://example.com");
+        var events = CalendarFeed.Events(2018, years: 1, siteUrl: "https://example.com");
 
         Assert.DoesNotContain(events, e => e.Summary.EndsWith("fast (Tsome Dihnet)") && e.Start == new DateOnly(2026, 1, 7));
     }

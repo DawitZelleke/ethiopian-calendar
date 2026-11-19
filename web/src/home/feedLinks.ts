@@ -1,6 +1,6 @@
 /** Calendar feed URLs for a host, e.g. "ethiopian-calendar.onrender.com". */
-export function feedLinks(host: string, includeWeekly: boolean) {
-  const path = `${host}/calendar.ics${includeWeekly ? '?weekly=true' : ''}`
+export function feedLinks(host: string) {
+  const path = `${host}/calendar.ics`
   const webcal = `webcal://${path}`
   return {
     https: `https://${path}`,
