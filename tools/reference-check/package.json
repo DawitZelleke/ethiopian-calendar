@@ -7,7 +7,9 @@
     "compare": "node compare.mjs"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "0.5.1",
     "abushakir": "1.5.2",
     "kenat": "4.0.0"
-  }
+  },
+  "//": "@js-temporal/polyfill: AbushakirJs 1.5.2 needs it at runtime but only lists it as a devDependency, so npm doesn't install it."
 }

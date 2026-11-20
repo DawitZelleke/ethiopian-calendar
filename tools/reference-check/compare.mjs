@@ -74,9 +74,16 @@ class Check {
     this.errors = []
   }
 
-  compare(label, ours, theirs) {
+  /** year: the Ethiopian year; kind: what was compared, e.g. "fasika" or "abiy-tsom end". */
+  compare(year, kind, ours, theirs) {
     this.compared++
-    if (key(ours) !== key(theirs)) this.mismatches.push({ label, ours: show(ours), theirs: show(theirs) })
+    if (key(ours) !== key(theirs)) this.mismatches.push({ year, kind, ours: show(ours), theirs: show(theirs) })
+  }
+
+  /** Records a difference between two plain values (numbers). */
+  compareValue(year, kind, ours, theirs) {
+    this.compared++
+    if (ours !== theirs) this.mismatches.push({ year, kind, ours, theirs })
   }
 
   error(label, e) {
@@ -111,21 +118,16 @@ for (let year = firstYear; year <= lastYear; year++) {
   // 1. Bahire Hasab intermediate values.
   try {
     const k = getBahireHasab(year, { lang: 'english' })
-    for (const [name, oursValue, theirs] of [
-      ['wenber', working.wenber, k.wenber],
-      ['abekte', working.abekte, k.abektie],
-      ['metqi', working.metqi, k.metqi],
-      ['mebajaHamer', working.mebajaHamer, k.mebajaHamer],
-    ]) {
-      checks.bahireHasab.compared++
-      if (oursValue !== theirs) checks.bahireHasab.mismatches.push({ label: `${year} ${name}`, ours: oursValue, theirs })
-    }
-    checks.bahireHasab.compare(`${year} Nineveh`, working.nineveh, k.nineveh)
+    checks.bahireHasab.compareValue(year, 'wenber', working.wenber, k.wenber)
+    checks.bahireHasab.compareValue(year, 'abekte', working.abekte, k.abektie)
+    checks.bahireHasab.compareValue(year, 'metqi', working.metqi, k.metqi)
+    checks.bahireHasab.compareValue(year, 'mebajaHamer', working.mebajaHamer, k.mebajaHamer)
+    checks.bahireHasab.compare(year, 'nineveh', working.nineveh, k.nineveh)
 
     // 2. Every movable feast and fast.
     for (const [kenatKey, id] of Object.entries(kenatFeasts)) {
       const theirs = k.movableFeasts[kenatKey]?.ethiopian
-      checks.kenatFeasts.compare(`${year} ${id}`, observance(id), theirs)
+      checks.kenatFeasts.compare(year, id, observance(id), theirs)
     }
   } catch (e) {
     checks.bahireHasab.error(year, e)
@@ -136,8 +138,8 @@ for (let year = firstYear; year <= lastYear; year++) {
     try {
       const theirs = getFastingPeriod(kenatKey, year)
       const period = fastPeriod(id)
-      checks.kenatFasts.compare(`${year} ${id} start`, period?.start, theirs?.start)
-      checks.kenatFasts.compare(`${year} ${id} end`, period?.end, theirs?.end)
+      checks.kenatFasts.compare(year, `${id} start`, period?.start, theirs?.start)
+      checks.kenatFasts.compare(year, `${id} end`, period?.end, theirs?.end)
     } catch (e) {
       checks.kenatFasts.error(`${year} ${kenatKey}`, e)
     }
@@ -147,7 +149,7 @@ for (let year = firstYear; year <= lastYear; year++) {
   for (const o of ours.observances) {
     try {
       const [y, m, d] = o.date.gregorian.split('-').map(Number)
-      checks.conversion.compare(`${o.date.display} (${o.id})`, { year: y, month: m, day: d }, toGC(o.date.year, o.date.month, o.date.day))
+      checks.conversion.compare(year, o.id, { year: y, month: m, day: d }, toGC(o.date.year, o.date.month, o.date.day))
     } catch (e) {
       checks.conversion.error(o.date.display, e)
     }
@@ -159,22 +161,56 @@ for (let year = firstYear; year <= lastYear; year++) {
     for (const [name, id] of Object.entries(abushakirFeasts)) {
       const r = bh.getSingleBealOrTsom(name)
       const month = abushakirMonths.indexOf(r?.month) + 1
-      checks.abushakir.compare(`${year} ${id}`, observance(id), month > 0 ? { year, month, day: r.date } : undefined)
+      checks.abushakir.compare(year, id, observance(id), month > 0 ? { year, month, day: r.date } : undefined)
     }
   } catch (e) {
     checks.abushakir.error(year, e)
   }
 }
 
+/** "1890-1891, 1895, 1900-2090" */
+function yearRanges(years) {
+  const sorted = [...new Set(years)].sort((a, b) => a - b)
+  const ranges = []
+  for (const y of sorted) {
+    const last = ranges.at(-1)
+    if (last && y === last[1] + 1) last[1] = y
+    else ranges.push([y, y])
+  }
+  return ranges.map(([a, b]) => (a === b ? `${a}` : `${a}-${b}`)).join(', ')
+}
+
+// Ethiopian years up to 1892 include dates before March 1, 1900, when the
+// Julian-Gregorian gap grew from 12 to 13 days. Differences there usually mean
+// a library assumes the modern 13-day gap; the engine's tests cover that edge.
+const BEFORE_1900 = 1892
+
 let kenatDisagrees = false
 for (const check of Object.values(checks)) {
   const status = check.mismatches.length === 0 && check.errors.length === 0 ? 'AGREE' : 'DIFFER'
   console.log(`${status.padEnd(6)}  ${check.name}: ${check.compared} compared, ${check.mismatches.length} differ, ${check.errors.length} errors`)
-  for (const m of check.mismatches.slice(0, 10)) console.log(`          ${m.label}: engine ${m.ours}, library ${m.theirs}`)
-  if (check.mismatches.length > 10) console.log(`          ...and ${check.mismatches.length - 10} more`)
+
+  // Group differences by what was compared, so patterns are visible at a glance.
+  const groups = new Map()
+  for (const m of check.mismatches) {
+    if (!groups.has(m.kind)) groups.set(m.kind, [])
+    groups.get(m.kind).push(m)
+  }
+  for (const [kind, list] of [...groups].sort((a, b) => b[1].length - a[1].length)) {
+    const modern = list.filter((m) => m.year > BEFORE_1900)
+    const example = modern[0] ?? list[0]
+    console.log(
+      `          ${kind}: ${list.length} years (${yearRanges(list.map((m) => m.year))})` +
+        (modern.length < list.length ? `, ${list.length - modern.length} of them before 1900` : '') +
+        `; e.g. ${example.year}: engine ${example.ours}, library ${example.theirs}`,
+    )
+  }
   for (const e of check.errors.slice(0, 5)) console.log(`          error: ${e}`)
-  if (check !== checks.abushakir && status === 'DIFFER') kenatDisagrees = true
+
+  if (check !== checks.abushakir && check.mismatches.some((m) => m.year > BEFORE_1900)) kenatDisagrees = true
 }
 
-console.log(`\nKenat ${kenatDisagrees ? 'DISAGREES with the engine somewhere above' : 'agrees with the engine on every check'}.`)
+console.log(
+  `\nKenat ${kenatDisagrees ? 'DISAGREES with the engine after 1900 (see above)' : 'agrees with the engine on every check after 1900'}.`,
+)
 process.exitCode = kenatDisagrees ? 1 : 0
