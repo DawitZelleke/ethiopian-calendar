@@ -23,6 +23,8 @@ node compare.mjs
 
 Or against the live site, for a shorter range: `node compare.mjs https://ethiopian-calendar.onrender.com 2010 2030`
 
+**Note:** AbushakirJs 1.5.2 loads `@js-temporal/polyfill` at runtime but only declares it as a devDependency, so a plain install of the library crashes with "Cannot find module '@js-temporal/polyfill'". This tool's `package.json` installs it explicitly.
+
 A difference isn't automatically a bug in the engine. Check which side matches a published church calendar, then record the outcome below.
 
 ## Results
