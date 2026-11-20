@@ -1,0 +1,13 @@
+{
+  "name": "reference-check",
+  "private": true,
+  "description": "Compares the engine's dates with two independent Ethiopian calendar libraries.",
+  "type": "module",
+  "scripts": {
+    "compare": "node compare.mjs"
+  },
+  "dependencies": {
+    "abushakir": "1.5.2",
+    "kenat": "4.0.0"
+  }
+}
