@@ -33,7 +33,18 @@ public sealed record DayDto(
     DayOfWeek DayOfWeek,
     bool IsFastDay,
     IReadOnlyList<FastDayDto> Fasts,
-    IReadOnlyList<ObservanceDto> Observances);
+    IReadOnlyList<ObservanceDto> Observances)
+{
+    /// <summary>Everything about one day: its date, its fasts (with progress), and its feasts.</summary>
+    public static DayDto For(EthiopianDate date) => new(
+        EthiopianDateDto.From(date),
+        date.DayOfWeek,
+        FastingCalendar.IsFastDay(date),
+        FastingCalendar.FastDaysOn(date).Select(FastDayDto.From).ToList(),
+        ChurchCalendar.ObservancesOn(date).Select(ObservanceDto.From).ToList());
+}
+
+public sealed record MonthDto(int Year, int Month, string MonthName, IReadOnlyList<DayDto> Days);
 
 public sealed record YearDto(
     int Year,

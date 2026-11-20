@@ -35,16 +35,18 @@ api.MapGet("/health", () => TypedResults.Ok(new
 }));
 
 // One day: its Ethiopian date, whether it is a fast day and why, and any feasts.
-api.MapGet("/days/{date}", (DateOnly date) => Handle(() =>
-{
-    var ethiopian = EthiopianDate.FromGregorian(date);
+api.MapGet("/days/{date}", (DateOnly date) =>
+    Handle(() => DayDto.For(EthiopianDate.FromGregorian(date))));
 
-    return new DayDto(
-        EthiopianDateDto.From(ethiopian),
-        ethiopian.DayOfWeek,
-        FastingCalendar.IsFastDay(ethiopian),
-        FastingCalendar.FastDaysOn(ethiopian).Select(FastDayDto.From).ToList(),
-        ChurchCalendar.ObservancesOn(ethiopian).Select(ObservanceDto.From).ToList());
+// A whole Ethiopian month, day by day: 30 days, or 5 or 6 for Pagume.
+api.MapGet("/months/{year:int}/{month:int}", (int year, int month) => Handle(() =>
+{
+    var first = new EthiopianDate(year, month, 1);
+    var days = Enumerable.Range(0, EthiopianDate.DaysInMonth(year, month))
+        .Select(i => DayDto.For(first.AddDays(i)))
+        .ToList();
+
+    return new MonthDto(year, month, first.MonthName, days);
 }));
 
 // A whole Ethiopian year: every feast and every fast period.

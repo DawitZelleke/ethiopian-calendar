@@ -188,6 +188,38 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
     }
 
     [Fact]
+    public async Task Month_Hidar2019_Has30DaysWithFastsAndFeasts()
+    {
+        var month = await _client.GetFromJsonAsync<MonthDto>("/api/months/2019/3", Json);
+
+        Assert.NotNull(month);
+        Assert.Equal("Hidar", month.MonthName);
+        Assert.Equal(30, month.Days.Count);
+        Assert.Equal(new DateOnly(2026, 11, 10), month.Days[0].Date.Gregorian);
+        Assert.Equal(1, month.Days[14].Fasts.Single(f => f.Id == "tsome-nebiyat").DayNumber); // Hidar 15
+        Assert.Contains(month.Days[20].Observances, o => o.Id == "hidar-tsion");              // Hidar 21
+    }
+
+    [Theory]
+    [InlineData(2019, 6)]   // a leap year: Pagume has 6 days
+    [InlineData(2018, 5)]
+    public async Task Month_Pagume_HasFiveOrSixDays(int year, int expectedDays)
+    {
+        var month = await _client.GetFromJsonAsync<MonthDto>($"/api/months/{year}/13", Json);
+
+        Assert.NotNull(month);
+        Assert.Equal(expectedDays, month.Days.Count);
+    }
+
+    [Fact]
+    public async Task Month_14_Returns400()
+    {
+        var response = await _client.GetAsync("/api/months/2019/14");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Health_ReturnsOk()
     {
         var response = await _client.GetAsync("/api/health");
