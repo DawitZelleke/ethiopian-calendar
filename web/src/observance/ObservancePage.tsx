@@ -136,6 +136,6 @@ function typeLabel(type: string) {
 
 function useDocumentTitle(title?: string) {
   useEffect(() => {
-    if (title) document.title = `${title} · Ethiopian Calendar`
+    if (title) document.title = `${title} · Ethiopian Orthodox Calendar`
   }, [title])
 }

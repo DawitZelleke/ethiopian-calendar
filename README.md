@@ -79,6 +79,7 @@ Requires the .NET 10 SDK and Node 22.
 - The API is a thin layer over the core library. Validation lives once, in the core, and the API translates it into HTTP responses.
 - Dates come from the engine; words come from content files. Each can change without touching the other.
 - Record Mode's scene and step logic is a pure TypeScript module with unit tests, separate from the React components that draw it.
+- Fast and feast pages get link previews (title, description, Open Graph tags) written into the HTML by the server, because WhatsApp, iMessage and search engines don't run JavaScript. Every value is HTML-encoded before it goes into the page.
 
 ## Roadmap
 
