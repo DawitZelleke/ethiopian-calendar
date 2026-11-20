@@ -92,6 +92,23 @@ app.MapMethods("/calendar.ics", ["GET", "HEAD"], (HttpContext http, IConfigurati
 // Unknown /api routes are a 404, not the website.
 api.MapFallback(() => TypedResults.NotFound());
 
+// Fast and feast pages (e.g. /tsome-nebiyat) get a link preview written into the HTML.
+// Any single lowercase word that isn't a known id still gets the plain page, and React shows "not found".
+app.MapGet("/{id:regex(^[a-z]+(-[a-z]+)*$)}", (string id, HttpContext http, IConfiguration config, IWebHostEnvironment env) =>
+{
+    var index = env.WebRootFileProvider.GetFileInfo("index.html");
+    if (!index.Exists)
+        return Results.NotFound();
+
+    using var reader = new StreamReader(index.CreateReadStream());
+    string html = reader.ReadToEnd();
+
+    var today = EthiopianDate.FromGregorian(DateOnly.FromDateTime(DateTime.UtcNow));
+    var preview = LinkPreview.For(id, today, SiteUrl(http, config));
+
+    return Results.Content(preview is null ? html : LinkPreview.Apply(html, preview), "text/html; charset=utf-8");
+});
+
 // Any other path (/, /record/2026-11-24) is a page in the React app.
 app.MapFallbackToFile("index.html");
 
