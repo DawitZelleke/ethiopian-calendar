@@ -32,6 +32,9 @@ export function Home() {
               {today.date.monthName} {today.date.day}, {today.date.year}
             </h1>
             <p className="gregorian">{formatGregorian(today.date.gregorian)}</p>
+            <p className="month-link">
+              <a href="/month">View {today.date.monthName} {today.date.year} →</a>
+            </p>
           </>
         ) : (
           <h1>{error ? 'Could not load the calendar' : 'Loading…'}</h1>

@@ -154,3 +154,12 @@
   background: transparent;
   color: var(--accent);
 }
+
+.month-link {
+  margin: 12px 0 0;
+  font-weight: 600;
+}
+
+.month-link a {
+  text-decoration: none;
+}

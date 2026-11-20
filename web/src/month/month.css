@@ -1,0 +1,134 @@
+.month-page .back {
+  display: inline-block;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.month-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.month-header h1 {
+  font-size: clamp(28px, 7.5vw, 44px);
+  white-space: nowrap;
+}
+
+.month-nav {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.month-nav:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  padding-bottom: 6px;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid transparent;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.day .eth-day {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.day .greg-day {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Fast days: a warm tint. Feasts: a gold border. Today: a solid ring. */
+.day.fast {
+  background: rgba(242, 181, 68, 0.22);
+}
+
+.day.feast {
+  border-color: var(--accent);
+}
+
+.day.today {
+  outline: 2px solid var(--text);
+  outline-offset: 1px;
+}
+
+a.day:hover {
+  border-color: var(--accent);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.legend span {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.legend .legend-fast {
+  background: rgba(242, 181, 68, 0.35);
+}
+
+.legend .legend-feast {
+  border: 1px solid var(--accent);
+  margin-left: 10px;
+}
+
+@media (min-width: 560px) {
+  .day .eth-day {
+    font-size: 22px;
+  }
+
+  .day .greg-day {
+    font-size: 12px;
+  }
+}
