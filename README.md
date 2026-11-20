@@ -4,6 +4,13 @@
 
 **Live:** [ethiopian-calendar.onrender.com](https://ethiopian-calendar.onrender.com) · try [Tsome Nebiyat](https://ethiopian-calendar.onrender.com/tsome-nebiyat) or [Record Mode](https://ethiopian-calendar.onrender.com/record/2026-11-24)
 
+<p>
+  <img src="docs/screenshots/home.png" width="200" alt="Home page: today's Ethiopian date, fast status and upcoming feasts">
+  <img src="docs/screenshots/month.png" width="200" alt="Month view of Hidar 2019 with fast days and feasts marked">
+  <img src="docs/screenshots/feast-page.png" width="200" alt="Tsome Nebiyat page with its next dates and meaning">
+  <img src="docs/screenshots/record-mode.png" width="200" alt="Record Mode: a 9:16 frame showing Hidar 15, Tsome Nebiyat, Day 1 of 44">
+</p>
+
 A C# / .NET 10 engine, REST API and React + TypeScript site that converts between the Ethiopian and Gregorian calendars and computes the feasts and fasts of the Ethiopian Orthodox Tewahedo Church using **Bahire Hasab**, the church's traditional calculation.
 
 I built it because the fasting calendar shapes my year, and most apps either skip the Ethiopian calendar or hard-code a few years of dates. This computes any year from the rules themselves.
