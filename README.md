@@ -47,6 +47,7 @@ Invalid input (for example Pagume 6 in a non-leap year) returns `400 Bad Request
 - **Two independent algorithms:** Fasika from Bahire Hasab matches the Julian Easter computus (Meeus) for every year from 1900 to 2099.
 - **Published dates:** Fasika matches published dates from 2015 to 2030.
 - **The Metqi = 0 edge case:** once every 19 years the Metqi value is 0 and must be read as 30. Without that rule Fasika comes out about a month late (for example in 1995). It has its own test.
+- **Two independent libraries:** compared with [Kenat](https://github.com/MelakuDemeke/kenat) and [AbushakirJs](https://github.com/Nabute/AbushakirJs) for 1890–2090. Kenat agrees on every Bahire Hasab value, movable feast and conversion after 1900; every remaining difference is explained, and the comparison found three bugs in AbushakirJs. [Full results](tools/reference-check/README.md#results).
 - **Calendar drift:** Genna is January 7 only from 1901 to 2100, because the Julian and Gregorian calendars drift apart at century years. The tests cover both edges.
 - **Fasting rules confirmed against practice:** no fasting on Wednesdays and Fridays in the 50 days after Fasika, and none when Genna or Timkat falls on those days.
 - **API integration tests** call the real endpoints over HTTP, including invalid input.
