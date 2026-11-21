@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ethiopian Orthodox Calendar Widget</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 640px; padding: 24px 16px 48px; line-height: 1.5; color: #222; }
+      code, pre { background: #f3f1ec; border-radius: 6px; }
+      pre { padding: 12px; overflow-x: auto; font-size: 13px; }
+      /* Deliberately hostile rules, like a WordPress theme might have, to show the widget is unaffected. */
+      .hostile div { color: magenta !important; font-size: 30px !important; }
+      .hostile button { background: lime !important; }
+    </style>
+  </head>
+  <body>
+    <h1>Ethiopian Orthodox Calendar Widget</h1>
+    <p>Fasts and feasts computed with Bahire Hasab, updated automatically every month.</p>
+
+    <h2>Today banner</h2>
+    <div class="ethiopian-calendar" data-view="today"></div>
+
+    <h2>Month calendar</h2>
+    <div class="hostile">
+      <div class="ethiopian-calendar" data-view="month"></div>
+    </div>
+
+    <h2>Add it to your site</h2>
+    <p>Paste this into a WordPress "Custom HTML" block, or any web page:</p>
+    <pre>&lt;div class="ethiopian-calendar" data-view="month"&gt;&lt;/div&gt;
+&lt;script src="https://dawitzelleke.github.io/ethiopian-calendar/widget.js" defer&gt;&lt;/script&gt;</pre>
+    <p>
+      Options: <code>data-view="today"</code> for a one-line banner, <code>data-lang="am"</code> or
+      <code>"en"</code> for one language, <code>data-accent="#8a1c1c"</code> for your colour.
+    </p>
+    <p><a href="https://github.com/DawitZelleke/ethiopian-calendar">Source code</a></p>
+
+    <script src="widget.js" defer></script>
+  </body>
+</html>
