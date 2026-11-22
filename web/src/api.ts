@@ -25,12 +25,20 @@ export interface FastDay {
   totalDays: number
 }
 
+export interface Commemoration {
+  id: string
+  name: string
+  nameAmharic: string
+}
+
 export interface Day {
   date: EthiopianDate
   dayOfWeek: string
   isFastDay: boolean
   fasts: FastDay[]
   observances: Observance[]
+  /** Monthly feasts, e.g. St. Michael on the 12th of every month. */
+  commemorations: Commemoration[]
 }
 
 export interface FastPeriod {

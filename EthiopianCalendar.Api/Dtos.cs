@@ -28,12 +28,18 @@ public sealed record FastPeriodDto(string Id, string Name, EthiopianDateDto Star
         new(p.Id, p.Name, EthiopianDateDto.From(p.Start), EthiopianDateDto.From(p.End), p.LengthInDays);
 }
 
+public sealed record CommemorationDto(string Id, string Name, string NameAmharic)
+{
+    public static CommemorationDto From(MonthlyCommemoration c) => new(c.Id, c.Name, c.NameAmharic);
+}
+
 public sealed record DayDto(
     EthiopianDateDto Date,
     DayOfWeek DayOfWeek,
     bool IsFastDay,
     IReadOnlyList<FastDayDto> Fasts,
-    IReadOnlyList<ObservanceDto> Observances)
+    IReadOnlyList<ObservanceDto> Observances,
+    IReadOnlyList<CommemorationDto> Commemorations)
 {
     /// <summary>Everything about one day: its date, its fasts (with progress), and its feasts.</summary>
     public static DayDto For(EthiopianDate date) => new(
@@ -41,7 +47,8 @@ public sealed record DayDto(
         date.DayOfWeek,
         FastingCalendar.IsFastDay(date),
         FastingCalendar.FastDaysOn(date).Select(FastDayDto.From).ToList(),
-        ChurchCalendar.ObservancesOn(date).Select(ObservanceDto.From).ToList());
+        ChurchCalendar.ObservancesOn(date).Select(ObservanceDto.From).ToList(),
+        MonthlyCommemorations.On(date).Select(CommemorationDto.From).ToList());
 }
 
 public sealed record MonthDto(int Year, int Month, string MonthName, IReadOnlyList<DayDto> Days);
@@ -61,13 +68,15 @@ public sealed record BahireHasabDto(
     int Tewsak,
     int MebajaHamer,
     EthiopianDateDto Nineveh,
-    EthiopianDateDto Fasika)
+    EthiopianDateDto Fasika,
+    Evangelist Evangelist)
 {
     public static BahireHasabDto From(BahireHasabResult r) => new(
         r.Year, r.AmeteAlem, r.Wenber, r.Abekte, r.Metqi,
         EthiopianDateDto.From(r.BealeMetqi), r.Tewsak, r.MebajaHamer,
         EthiopianDateDto.From(r.Nineveh),
-        EthiopianDateDto.From(r.Nineveh.AddDays(MoveableFeasts.FasikaOffset)));
+        EthiopianDateDto.From(r.Nineveh.AddDays(MoveableFeasts.FasikaOffset)),
+        BahireHasab.EvangelistOf(r.Year));
 }
 
 public sealed record OccurrenceDto(

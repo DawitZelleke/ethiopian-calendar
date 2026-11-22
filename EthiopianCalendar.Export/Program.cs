@@ -67,6 +67,7 @@ if (Directory.Exists(parishesDir))
 
 static YearFile YearData(int year) => new(
     year,
+    BahireHasab.EvangelistOf(year).ToString(),
     Enumerable.Range(1, 13).Select(month =>
     {
         var first = new EthiopianDate(year, month, 1);
@@ -81,10 +82,12 @@ static DayData DayData(EthiopianDate date) => new(
     date.ToGregorian().ToString("yyyy-MM-dd"),
     (int)date.DayOfWeek,
     FastingCalendar.FastDaysOn(date).Select(f => new FastData(f.Id, f.Name, f.DayNumber, f.TotalDays)).ToList(),
-    ChurchCalendar.ObservancesOn(date).Select(o => new FeastData(o.Id, o.Name, o.Kind.ToString())).ToList());
+    ChurchCalendar.ObservancesOn(date).Select(o => new FeastData(o.Id, o.Name, o.Kind.ToString())).ToList(),
+    MonthlyCommemorations.On(date).Select(c => new CommemorationData(c.Id, c.Name, c.NameAmharic)).ToList());
 
-record YearFile(int Year, List<MonthData> Months);
+record YearFile(int Year, string Evangelist, List<MonthData> Months);
 record MonthData(int Month, string Name, List<DayData> Days);
-record DayData(int Day, string Gregorian, int Weekday, List<FastData> Fasts, List<FeastData> Feasts);
+record DayData(int Day, string Gregorian, int Weekday, List<FastData> Fasts, List<FeastData> Feasts, List<CommemorationData> Commemorations);
+record CommemorationData(string Id, string Name, string NameAmharic);
 record FastData(string Id, string Name, int Day, int Total);
 record FeastData(string Id, string Name, string Kind);

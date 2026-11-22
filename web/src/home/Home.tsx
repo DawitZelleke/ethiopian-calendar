@@ -63,6 +63,11 @@ export function Home() {
               {o.name}
             </p>
           ))}
+          {today.commemorations.map((c) => (
+            <p key={c.id} className="progress">
+              Monthly feast: <span className="geez">{c.nameAmharic}</span> · {c.name}
+            </p>
+          ))}
         </section>
       )}
 

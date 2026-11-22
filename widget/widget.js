@@ -50,6 +50,26 @@
     paraclete: 'ጰራቅሊጦስ',
     'peter-and-paul': 'ጴጥሮስ ወጳውሎስ',
     filseta: 'ፍልሰታ ለማርያም',
+    'tir-mikael': 'ጥር ሚካኤል',
+    'kidane-mehret': 'ኪዳነ ምሕረት',
+  }
+
+  // "Each year is dedicated to one of the four Evangelists": the year of Luke is the leap year.
+  var EVANGELISTS = {
+    Matthew: { am: 'ዘመነ ማቴዎስ', en: 'Year of Matthew' },
+    Mark: { am: 'ዘመነ ማርቆስ', en: 'Year of Mark' },
+    Luke: { am: 'ዘመነ ሉቃስ', en: 'Year of Luke' },
+    John: { am: 'ዘመነ ዮሐንስ', en: 'Year of John' },
+  }
+
+  function evangelistText(e, lang) {
+    var x = EVANGELISTS[e]
+    if (!x) return ''
+    return lang === 'am' ? x.am : lang === 'en' ? x.en : x.am + ' · ' + x.en
+  }
+
+  function commemorationText(c, lang) {
+    return lang === 'am' ? c.nameAmharic : lang === 'en' ? c.name : c.nameAmharic + ' · ' + c.name
   }
 
   var yearCache = {}
@@ -84,7 +104,7 @@
           for (var m = 0; m < data.months.length; m++) {
             var days = data.months[m].days
             for (var d = 0; d < days.length; d++) {
-              if (days[d].gregorian === iso) return { year: data.year, month: m + 1, day: days[d], monthName: data.months[m].name }
+              if (days[d].gregorian === iso) return { year: data.year, month: m + 1, day: days[d], monthName: data.months[m].name, evangelist: data.evangelist }
             }
           }
         }
@@ -174,8 +194,13 @@
       var b = el('div', 'banner' + (t.day.fasts.length ? '' : ' plain'))
       var date = lang === 'en' ? t.monthName + ' ' + t.day.day + ', ' + t.year : MONTHS_AM[t.month - 1] + ' ' + t.day.day + ' ' + t.year
       b.appendChild(el('strong', null, date))
-      var parts = tabotsOn(parish, t.month, t.day.day).map(function (x) { return tabotText(x, lang) })
+      var tabots = tabotsOn(parish, t.month, t.day.day)
+      var parts = tabots.map(function (x) { return tabotText(x, lang) })
       t.day.feasts.forEach(function (f) { parts.push(name(f, lang)) })
+      ;(t.day.commemorations || [])
+        // Skip a monthly feast for a saint whose tabot is already shown (e.g. St. Michael on Hidar 12).
+        .filter(function (c) { return !tabots.some(function (x) { return x.saintAmharic === c.nameAmharic }) })
+        .forEach(function (c) { parts.push(commemorationText(c, lang)) })
       t.day.fasts.forEach(function (f) {
         parts.push(name(f, lang) + (f.total > 1 ? (lang === 'am' ? ' (' + f.day + '/' + f.total + ')' : ' · day ' + f.day + ' of ' + f.total) : ''))
       })
@@ -204,6 +229,7 @@
         var title = el('div', 'title', monthTitle(month, m.name, year, lang))
         var first = m.days[0].gregorian, last = m.days[m.days.length - 1].gregorian
         title.appendChild(el('span', 'sub', formatGregorian(first, { month: 'short', day: 'numeric' }) + ' – ' + formatGregorian(last, { month: 'short', day: 'numeric', year: 'numeric' })))
+        if (data.evangelist) title.appendChild(el('span', 'sub', evangelistText(data.evangelist, lang)))
         prev.onclick = function () { go(-1) }
         next.onclick = function () { go(1) }
         head.appendChild(prev); head.appendChild(title); head.appendChild(next)
@@ -223,6 +249,7 @@
           var label = [monthTitle(month, m.name, year, 'en').replace(' ' + year, ' ' + d.day + ', ' + year), formatGregorian(d.gregorian, { weekday: 'long', month: 'long', day: 'numeric' })]
           d.fasts.concat(d.feasts).forEach(function (x) { label.push(x.name) })
           tabots.forEach(function (t) { label.push(t.occasion + ': ' + t.saint + ' tabot') })
+          ;(d.commemorations || []).forEach(function (c) { label.push(c.name + ' (monthly)') })
           cell.setAttribute('aria-label', label.join('. '))
           cell.title = label.join('\n')
           cell.appendChild(el('span', 'e', String(d.day)))
