@@ -10,6 +10,8 @@
  *   data-view    "month" (a month grid, default) or "today" (a one-line banner)
  *   data-lang    "both" (Amharic and English, default), "am" or "en"
  *   data-accent  a CSS colour for highlights, e.g. "#8a1c1c"
+ *   data-parish  a parish id (e.g. "st-teklehaimanot-ottawa") to add that parish's own days,
+ *                such as its tabot processions, and to subscribe to that parish's feed
  *
  * The widget reads static files (data/<year>.json) published next to this script,
  * so it never depends on a server being awake. It renders inside a Shadow DOM:
@@ -133,6 +135,9 @@
     '.day .g{font-size:.62em;color:#6b6b6b}',
     '.day.fast{background:var(--fast)}',
     '.day.feast{border-color:var(--accent)}',
+    // A parish tabot day: a small gold mark under the date.
+    '.day.tabot::after{content:"";width:6px;height:6px;border-radius:50%;background:#b8860b;margin-top:2px}',
+    '.day.today.tabot::after{background:#f2c14e}',
     // Today is a solid dark fill, so it can't be confused with a feast's outline.
     '.day.today{background:#1d1d1f;color:#fff}',
     '.day.today .g{color:#d8d8d8}',
@@ -151,12 +156,26 @@
     '.error{color:#8a1c1c;font-size:.9em}',
   ].join('\n')
 
-  function renderToday(root, lang) {
+  /** The parish's tabot days that fall on this Ethiopian month and day. */
+  function tabotsOn(parish, month, day) {
+    if (!parish) return []
+    return parish.tabots.filter(function (t) { return t.month === month && t.day === day })
+  }
+
+  function tabotText(t, lang) {
+    var en = t.occasion + ': ' + t.saint + ' tabot'
+    if (lang === 'en') return en
+    if (lang === 'am') return t.saintAmharic + ' · ታቦት'
+    return t.saintAmharic + ' · ' + en
+  }
+
+  function renderToday(root, lang, parish) {
     return findToday().then(function (t) {
       var b = el('div', 'banner' + (t.day.fasts.length ? '' : ' plain'))
       var date = lang === 'en' ? t.monthName + ' ' + t.day.day + ', ' + t.year : MONTHS_AM[t.month - 1] + ' ' + t.day.day + ' ' + t.year
       b.appendChild(el('strong', null, date))
-      var parts = t.day.feasts.map(function (f) { return name(f, lang) })
+      var parts = tabotsOn(parish, t.month, t.day.day).map(function (x) { return tabotText(x, lang) })
+      t.day.feasts.forEach(function (f) { parts.push(name(f, lang)) })
       t.day.fasts.forEach(function (f) {
         parts.push(name(f, lang) + (f.total > 1 ? (lang === 'am' ? ' (' + f.day + '/' + f.total + ')' : ' · day ' + f.day + ' of ' + f.total) : ''))
       })
@@ -166,7 +185,7 @@
     })
   }
 
-  function renderMonth(root, lang) {
+  function renderMonth(root, lang, parish) {
     var wrap = el('div', 'wrap')
     root.appendChild(wrap)
     var state = null
@@ -197,16 +216,19 @@
         var todayIso = isoToday()
         var events = []
         m.days.forEach(function (d) {
-          var cls = 'day' + (d.fasts.length ? ' fast' : '') + (d.feasts.length ? ' feast' : '') + (d.gregorian === todayIso ? ' today' : '')
+          var tabots = tabotsOn(parish, month, d.day)
+          var cls = 'day' + (d.fasts.length ? ' fast' : '') + (d.feasts.length ? ' feast' : '') + (tabots.length ? ' tabot' : '') + (d.gregorian === todayIso ? ' today' : '')
           var cell = el('div', cls)
           cell.setAttribute('role', 'gridcell')
           var label = [monthTitle(month, m.name, year, 'en').replace(' ' + year, ' ' + d.day + ', ' + year), formatGregorian(d.gregorian, { weekday: 'long', month: 'long', day: 'numeric' })]
           d.fasts.concat(d.feasts).forEach(function (x) { label.push(x.name) })
+          tabots.forEach(function (t) { label.push(t.occasion + ': ' + t.saint + ' tabot') })
           cell.setAttribute('aria-label', label.join('. '))
           cell.title = label.join('\n')
           cell.appendChild(el('span', 'e', String(d.day)))
           cell.appendChild(el('span', 'g', formatGregorian(d.gregorian, { month: d.day === 1 || d.gregorian.slice(8) === '01' ? 'short' : undefined, day: 'numeric' })))
           grid.appendChild(cell)
+          tabots.forEach(function (t) { events.push({ d: d, text: tabotText(t, lang) }) })
           d.feasts.forEach(function (f) { events.push({ d: d, text: name(f, lang) }) })
           d.fasts.forEach(function (f) { if (f.day === 1 && f.total > 1) events.push({ d: d, text: name(f, lang) + (lang === 'am' ? ' ይጀምራል (' + f.total + ' ቀናት)' : ' begins (' + f.total + ' days)') }) })
         })
@@ -217,6 +239,11 @@
         var le = el('span'); var se = el('i'); se.style.border = '1px solid var(--accent)'; le.appendChild(se); le.appendChild(document.createTextNode(lang === 'en' ? 'Feast' : lang === 'am' ? 'በዓል' : 'በዓል · Feast'))
         var lt = el('span'); var st = el('i'); st.style.background = '#1d1d1f'; lt.appendChild(st); lt.appendChild(document.createTextNode(lang === 'en' ? 'Today' : lang === 'am' ? 'ዛሬ' : 'ዛሬ · Today'))
         legend.appendChild(lf); legend.appendChild(le); legend.appendChild(lt)
+        if (parish && parish.tabots.length) {
+          var lb = el('span'); var sb = el('i'); sb.style.background = '#b8860b'; sb.style.borderRadius = '50%'; lb.appendChild(sb)
+          lb.appendChild(document.createTextNode(lang === 'en' ? 'Tabot' : lang === 'am' ? 'ታቦት' : 'ታቦት · Tabot'))
+          legend.appendChild(lb)
+        }
         wrap.appendChild(legend)
 
         if (events.length) {
@@ -230,7 +257,8 @@
           wrap.appendChild(list)
         }
 
-        var feed = BASE.replace(/^https?:/, '') + 'calendar.ics'
+        // A parish's feed includes its tabot days; otherwise the general feed.
+        var feed = BASE.replace(/^https?:/, '') + (parish ? 'parishes/' + parish.id + '/calendar.ics' : 'calendar.ics')
         var sub = el('div', 'subscribe')
         var google = el('a', null, lang === 'am' ? 'ወደ Google ቀን መቁጠሪያ' : 'Add to Google Calendar')
         google.href = 'https://calendar.google.com/calendar/r?cid=' + encodeURIComponent('webcal:' + feed)
@@ -261,7 +289,14 @@
     if (host.dataset.accent) host.style.setProperty('--accent', host.dataset.accent)
     var lang = host.dataset.lang || 'both'
     var render = host.dataset.view === 'today' ? renderToday : renderMonth
-    render(root, lang).catch(function (e) {
+    var parishId = host.dataset.parish
+    var parish = parishId
+      ? fetch(BASE + 'parishes/' + encodeURIComponent(parishId) + '.json').then(function (r) {
+          if (!r.ok) throw new Error('Unknown parish "' + parishId + '"')
+          return r.json()
+        })
+      : Promise.resolve(null)
+    parish.then(function (p) { return render(root, lang, p) }).catch(function (e) {
       root.appendChild(el('p', 'error', 'The calendar could not be loaded. ' + e.message))
     })
   }
