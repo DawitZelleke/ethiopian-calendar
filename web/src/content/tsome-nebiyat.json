@@ -3,19 +3,30 @@
   "nameEnglish": "Fast of the Prophets",
   "nameGeez": "ጾመ ነቢያት",
   "transliteration": "Tsome Nebiyat",
+  "alsoKnownAs": ["ጾመ አዳም · Tsome Adam", "ጾመ ስብከት · Tsome Sibket", "ጾመ ልደት · Tsome Lidet (the Christmas fast)"],
   "type": "fast",
   "movable": false,
-  "abstainFrom": "Meat, dairy and eggs",
-  "whatItIs": "The fast that prepares for Genna, Ethiopian Christmas. It runs from Hidar 15 until the eve of Genna.",
-  "whyItMatters": "It honours the prophets of the Old Testament, who waited and fasted for the coming of the Messiah. The church waits with them before celebrating His birth.",
+  "abstainFrom": "Meat, dairy, eggs and fats. Traditionally one meal a day, after about 3 p.m., with breakfast allowed on Saturdays and Sundays.",
+  "verse": {
+    "text": "ነፍሴን በጾም አደከምኃት። I humbled my soul with fasting.",
+    "reference": "Psalm 34:13 (35:13 in many English Bibles)"
+  },
+  "whatItIs": "The fast before Genna, Ethiopian Christmas. It runs from Hidar 15 to the eve of Genna, and it is one of the church's seven fasts.",
+  "whyItMatters": "The prophets kept this fast as they foresaw and longed for the birth of Christ and His work of salvation. It is a time of spiritual renewal, repentance and blessing.",
   "whatPeopleDo": [
-    "Meals are fully plant-based: no meat, dairy or eggs",
-    "Many wait until midday or later before eating on weekdays",
-    "The fast ends with the Genna celebration on January 7"
+    "Keep 44 days: 40 for the prophets, 3 for Abraham the Syrian, and 1 for Gehad, the eve of Genna",
+    "Celebrate the Sundays before Genna as minor feasts of the Lord: Sibket, Birhan and Nolawi",
+    "Give themselves to fasting and prayer until Genna on January 7"
   ],
-  "sources": [],
+  "sources": [
+    { "title": "Teaching on Tsome Nebiyat by Memhir Senay (shared in the parish community, Hidar 2019)" },
+    {
+      "title": "The Ethiopian Orthodox Church (Aymero W. and Joachim M., 1970): fasting rules and minor feasts",
+      "url": "https://www.ethiopianorthodox.org/english/calendar.html"
+    }
+  ],
   "review": {
     "reviewed": false,
-    "notes": "DRAFT. Confirm with a priest: the meaning and history, why the fast is often called 40 days when it runs 43-44, and the weekday eating time."
+    "notes": "Content from Memhir Senay's teaching and the church's published calendar. English wording by Dawit: confirm the translation. Open questions: which part is shorter in 43-day years (after a leap year), and which Sundays are Sibket, Birhan and Nolawi."
   }
 }

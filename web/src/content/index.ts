@@ -11,6 +11,10 @@ export interface Entry {
   nameEnglish: string
   nameGeez: string
   transliteration: string
+  /** Other names the observance is known by, e.g. "ጾመ ልደት · Tsome Lidet". */
+  alsoKnownAs?: string[]
+  /** A scripture verse associated with it. */
+  verse?: { text: string; reference: string }
   type: 'fast' | 'feast' | 'saints-day'
   movable: boolean
   abstainFrom?: string

@@ -41,6 +41,9 @@ export function ObservancePage({ id }: { id: string }) {
         {entry && <p className="name-geez geez">{entry.nameGeez}</p>}
         <h1>{title}</h1>
         {entry && <p className="gregorian">{entry.nameEnglish}</p>}
+        {entry?.alsoKnownAs && entry.alsoKnownAs.length > 0 && (
+          <p className="also-known">Also called {entry.alsoKnownAs.join(', ')}</p>
+        )}
       </header>
 
       {occurrence && <When occurrence={occurrence} />}
@@ -51,6 +54,12 @@ export function ObservancePage({ id }: { id: string }) {
             <p className="draft-note">
               Draft: I'm still learning this one, and the text hasn't been reviewed yet.
             </p>
+          )}
+          {entry.verse && (
+            <blockquote className="verse">
+              <p>{entry.verse.text}</p>
+              <cite>{entry.verse.reference}</cite>
+            </blockquote>
           )}
           <section>
             <h2>What it is</h2>
