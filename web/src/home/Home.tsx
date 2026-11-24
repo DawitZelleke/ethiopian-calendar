@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { calendarEvents, fetchDay, fetchYear, formatGregorian, todayIso, type Day, type Observance } from '../api'
 import { entries } from '../content'
+import { lessons } from '../lessons'
 import './home.css'
 import { Subscribe } from './Subscribe'
 
@@ -25,7 +26,7 @@ export function Home() {
   return (
     <main className="home">
       <header>
-        <p className="eyebrow">Ethiopian Orthodox Calendar</p>
+        <p className="eyebrow">Today</p>
         {today ? (
           <>
             <h1>
@@ -71,6 +72,8 @@ export function Home() {
         </section>
       )}
 
+      <LatestLesson />
+
       {upcoming.length > 0 && (
         <section>
           <h2>Coming up</h2>
@@ -92,12 +95,32 @@ export function Home() {
         </section>
       )}
 
+
       <Subscribe />
 
-      <footer>
-        Dates are computed with Bahire Hasab, the church's traditional calculation.{' '}
-        <a href="https://github.com/DawitZelleke/ethiopian-calendar">Source code</a>
-      </footer>
     </main>
+  )
+}
+
+/** The newest lesson up to today, or the next one if none has happened yet. */
+function LatestLesson() {
+  const today = todayIso()
+  const past = lessons.filter((l) => l.date <= today).sort((a, b) => b.date.localeCompare(a.date))
+  const lesson = past[0] ?? [...lessons].sort((a, b) => a.date.localeCompare(b.date))[0]
+  if (!lesson) return null
+
+  return (
+    <section>
+      <h2>{lesson.date === today ? "Today's lesson" : 'Latest lesson'}</h2>
+      <a className="lesson-card" href={`/lessons/${lesson.id}`}>
+        <strong>{lesson.hook}</strong>
+        {/* The verse text carries its own quotation marks. */}
+        <span className="verse-line">{lesson.verse.translation}</span>
+        <span className="ref">{lesson.verse.reference}</span>
+      </a>
+      <p className="more-lessons">
+        <a href="/lessons">All lessons →</a>
+      </p>
+    </section>
   )
 }

@@ -24,7 +24,7 @@ I built it because the fasting calendar shapes my year, and most apps either ski
 
 ## The site and Record Mode
 
-The React + TypeScript site (in `web/`) shows today's Ethiopian date, whether it's a fast day ("Day 1 of 44"), and what's coming up. A month view (`/month`) shows each Ethiopian month as a grid, with Gregorian dates, fast days and feasts. Each fast and feast has its own page (`/tsome-nebiyat`, `/genna`) with when it next happens and what it means. That's where the videos send viewers.
+The React + TypeScript site at [13thmonth.ca](https://13thmonth.ca) (in `web/`) has five sections: Today, Calendar (the month grid), Fasts & Feasts, Lessons (short history lessons built around a Bible verse, one per video), and About. Today shows today's Ethiopian date, whether it's a fast day ("Day 1 of 44"), and what's coming up. A month view (`/month`) shows each Ethiopian month as a grid, with Gregorian dates, fast days and feasts. Each fast and feast has its own page (`/tsome-nebiyat`, `/genna`) with when it next happens and what it means. That's where the videos send viewers.
 
 **Record Mode** (`/record/2026-11-24`) is a fixed 1080×1920 (9:16) canvas built for screen-recording short vertical videos about each fast and feast:
 

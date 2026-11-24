@@ -37,7 +37,7 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Generate calendar data and feed
-        run: dotnet run --project EthiopianCalendar.Export --configuration Release -- site https://ethiopian-calendar.onrender.com parishes
+        run: dotnet run --project EthiopianCalendar.Export --configuration Release -- site https://13thmonth.ca parishes
 
       - name: Add the widget
         run: cp widget/* site/

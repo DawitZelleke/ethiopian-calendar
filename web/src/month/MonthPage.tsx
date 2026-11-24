@@ -21,7 +21,7 @@ export function MonthPage({ year, month }: { year?: number; month?: number }) {
   }, [year, month])
 
   useEffect(() => {
-    if (data) document.title = `${data.monthName} ${data.year} · Ethiopian Orthodox Calendar`
+    if (data) document.title = `${data.monthName} ${data.year} · 13th Month`
   }, [data])
 
   if (error) {
@@ -54,9 +54,6 @@ export function MonthPage({ year, month }: { year?: number; month?: number }) {
 
   return (
     <main className="home month-page">
-      <a className="back" href="/">
-        ← Ethiopian Orthodox Calendar
-      </a>
 
       <header className="month-header">
         <a className="month-nav" href={`/month/${previous.year}/${previous.month}`} aria-label="Previous month">

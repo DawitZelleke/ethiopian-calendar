@@ -1,43 +1,56 @@
+import { AboutPage } from './about/AboutPage'
+import { todayIso } from './api'
+import { FeastsPage } from './feasts/FeastsPage'
 import { Home } from './home/Home'
+import { Layout } from './layout/Layout'
+import { LessonPage, LessonsPage } from './lessons/LessonPages'
 import { MonthPage } from './month/MonthPage'
 import { ObservancePage } from './observance/ObservancePage'
 import { RecordMode } from './record/RecordMode'
-import { todayIso } from './api'
+import { matchRoute } from './routes'
 
 /**
- * A handful of page types, so a router library would be overkill:
- *   /                                  home: today and what's coming up
+ * Pages (see routes.ts for the order rules):
+ *   /                                  today and what's coming up
  *   /month, /month/2019/3              a month of the Ethiopian calendar
- *   /record/2026-11-24?focus=<id>      Record Mode for a date: that date's lesson if there is one
- *                                      (or ?lesson=<id>), otherwise the fast or feast's description
- *   /record                            Record Mode for today
- *   /tsome-nebiyat                     a page for one fast or feast (any lowercase id)
- * Order matters: "/month" and "/record" would also match the fast-and-feast pattern.
+ *   /feasts                            every fast and feast, with its next date
+ *   /lessons, /lessons/<id>            history lessons, one per video
+ *   /about                             the calendar explained, and how the dates are checked
+ *   /tsome-nebiyat                     one fast or feast
+ *   /record/2026-11-24?lesson=<id>     Record Mode (no site menu: it's a video canvas)
  */
 export default function App() {
-  const path = window.location.pathname
+  const route = matchRoute(window.location.pathname)
 
-  const month = /^\/month(?:\/(\d{1,4})\/(\d{1,2}))?\/?$/.exec(path)
-  if (month) {
-    return <MonthPage year={month[1] ? Number(month[1]) : undefined} month={month[2] ? Number(month[2]) : undefined} />
-  }
-
-  const record = /^\/record(?:\/(\d{4}-\d{2}-\d{2}))?\/?$/.exec(path)
-  if (record) {
+  if (route.page === 'record') {
     const params = new URLSearchParams(window.location.search)
     return (
       <RecordMode
-        isoDate={record[1] ?? todayIso()}
+        isoDate={route.date ?? todayIso()}
         focusId={params.get('focus') ?? undefined}
         lessonId={params.get('lesson') ?? undefined}
       />
     )
   }
 
-  const observance = /^\/([a-z]+(?:-[a-z]+)*)\/?$/.exec(path)
-  if (observance) {
-    return <ObservancePage id={observance[1]} />
-  }
+  return <Layout>{page(route)}</Layout>
+}
 
-  return <Home />
+function page(route: ReturnType<typeof matchRoute>) {
+  switch (route.page) {
+    case 'month':
+      return <MonthPage year={route.year} month={route.month} />
+    case 'feasts':
+      return <FeastsPage />
+    case 'lessons':
+      return <LessonsPage />
+    case 'lesson':
+      return <LessonPage id={route.id} />
+    case 'about':
+      return <AboutPage />
+    case 'observance':
+      return <ObservancePage id={route.id} />
+    default:
+      return <Home />
+  }
 }
