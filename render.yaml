@@ -9,4 +9,6 @@ services:
     autoDeploy: true
     envVars:
       - key: SiteUrl
-        value: https://ethiopian-calendar.onrender.com
+        value: https://13thmonth.ca
+      # Add CanonicalHost = 13thmonth.ca in the Render dashboard once the domain is verified,
+      # to redirect thirteenthmonth.ca, www. and onrender.com visitors to 13thmonth.ca.

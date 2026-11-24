@@ -21,6 +21,10 @@ app.UseExceptionHandler(new ExceptionHandlerOptions
 });
 app.UseStatusCodePages();
 
+// One public address: redirect other hosts (thirteenthmonth.ca, www., onrender.com) to it.
+// Set CanonicalHost (e.g. 13thmonth.ca) only once that domain is connected.
+app.UseCanonicalHost(app.Configuration["CanonicalHost"]);
+
 // Serve the React site (built into wwwroot by `npm run build` in /web).
 app.UseDefaultFiles();
 app.UseStaticFiles();
