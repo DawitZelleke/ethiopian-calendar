@@ -1,5 +1,13 @@
 namespace EthiopianCalendar.Core;
 
+public enum Evangelist
+{
+    Matthew,
+    Mark,
+    Luke,
+    John,
+}
+
 /// <summary>
 /// The intermediate values of the Bahire Hasab computation for one Ethiopian year.
 /// Kept as a record so the UI can show the working, not just the answer.
@@ -53,6 +61,18 @@ public static class BahireHasab
         return new BahireHasabResult(
             year, ameteAlem, wenber, abekte, metqi, bealeMetqi, tewsak, mebajaHamer, nineveh);
     }
+
+    /// <summary>
+    /// Each year is dedicated to an Evangelist, in a four-year cycle: Matthew, Mark, Luke, John.
+    /// The year of Luke is the leap year (the one with Pagume 6).
+    /// </summary>
+    public static Evangelist EvangelistOf(int year) => (year % 4) switch
+    {
+        1 => Evangelist.Matthew,
+        2 => Evangelist.Mark,
+        3 => Evangelist.Luke,
+        _ => Evangelist.John,
+    };
 
     /// <summary>Tewsak: a fixed number per weekday of Beale Metqi.</summary>
     public static int TewsakFor(DayOfWeek day) => day switch

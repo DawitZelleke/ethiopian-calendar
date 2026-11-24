@@ -42,6 +42,15 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
     }
 
     [Fact]
+    public async Task Day_HidarMikael_IncludesTheMonthlyCommemoration()
+    {
+        var day = await _client.GetFromJsonAsync<DayDto>("/api/days/2026-11-21", Json);
+
+        Assert.NotNull(day);
+        Assert.Contains(day.Commemorations, c => c.Id == "monthly-mikael" && c.NameAmharic == "ቅዱስ ሚካኤል");
+    }
+
+    [Fact]
     public async Task Day_FirstDayOfNebiyat_ShowsProgress()
     {
         var day = await _client.GetFromJsonAsync<DayDto>("/api/days/2026-11-24", Json);
@@ -74,6 +83,7 @@ public class ApiTests(WebApplicationFactory<Program> factory) : IClassFixture<We
         Assert.Equal(18, result.Metqi);
         Assert.Equal(new DateOnly(2026, 2, 2), result.Nineveh.Gregorian);
         Assert.Equal(new DateOnly(2026, 4, 12), result.Fasika.Gregorian);
+        Assert.Equal(EthiopianCalendar.Core.Evangelist.Mark, result.Evangelist);
     }
 
     [Fact]

@@ -16,6 +16,7 @@ function month(count: number, firstWeekday: number, firstGregorian: string): Day
       isFastDay: false,
       fasts: [],
       observances: [],
+      commemorations: [],
     }
   })
 }
