@@ -38,3 +38,29 @@
   color: var(--muted);
   font-size: 15px;
 }
+
+.also-known {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  font-family: 'Noto Sans Ethiopic', Inter, sans-serif;
+}
+
+.observance .verse {
+  margin: 28px 0 0;
+  padding: 14px 18px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface);
+  border-radius: 0 12px 12px 0;
+}
+
+.observance .verse p {
+  margin: 0 0 6px;
+  font-family: 'Noto Sans Ethiopic', Inter, sans-serif;
+}
+
+.observance .verse cite {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 14px;
+}

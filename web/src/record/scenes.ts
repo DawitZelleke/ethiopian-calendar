@@ -22,6 +22,7 @@ export type Scene =
       focus?: Focus
     }
   | { type: 'text'; label: string; text: string }
+  | { type: 'verse'; text: string; translation?: string; reference: string }
   | { type: 'list'; label: string; items: string[] }
   | { type: 'close'; line: string; url: string }
 
@@ -94,6 +95,9 @@ export function buildScenes(day: Day, focus: Focus | undefined, siteUrl: string)
 
   const entry = focus?.entry
   if (entry) {
+    if (entry.verse) {
+      scenes.push({ type: 'verse', ...entry.verse })
+    }
     scenes.push({ type: 'text', label: 'What it is', text: entry.whatItIs })
     scenes.push({ type: 'text', label: 'Why it matters', text: entry.whyItMatters })
     if (entry.whatPeopleDo.length > 0) {
