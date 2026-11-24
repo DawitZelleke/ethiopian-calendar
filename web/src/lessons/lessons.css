@@ -1,0 +1,41 @@
+.lesson-list {
+  list-style: none;
+  padding: 0;
+  margin: 28px 0 0;
+  display: grid;
+  gap: 12px;
+}
+
+.lesson-list a {
+  display: grid;
+  gap: 6px;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.lesson-list a:hover {
+  border-color: var(--accent);
+}
+
+.lesson-list .when {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.lesson-list strong {
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.lesson-list .ref {
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.story-beat + .story-beat {
+  margin-top: 14px !important;
+}

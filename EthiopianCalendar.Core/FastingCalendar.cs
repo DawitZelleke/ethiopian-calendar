@@ -33,7 +33,7 @@ public static class FastingCalendar
     public const string WeeklyFastId = "tsome-dihnet";
     public const string WeeklyFastName = "Wednesday and Friday fast (Tsome Dihnet)";
 
-    private const int Tahsas = 4, Tir = 5, Hamle = 11, Nehase = 12, Hidar = 3, Meskerem = 1;
+    private const int Tahsas = 4, Tir = 5, Yekatit = 6, Hamle = 11, Nehase = 12, Hidar = 3, Meskerem = 1;
 
     /// <summary>
     /// Genna is Tahsas 29, or Tahsas 28 in the year after a leap year,
@@ -51,6 +51,9 @@ public static class FastingCalendar
         new("hidar-tsion", "Hidar Tsion (St. Mary of Zion)", ObservanceKind.SaintsDay, new EthiopianDate(year, Hidar, 21)),
         new("genna", "Genna (Christmas)", ObservanceKind.Feast, Genna(year)),
         new("timkat", "Timkat (Epiphany)", ObservanceKind.Feast, Timkat(year)),
+        // Listed with Timkat among the church's national and religious feasts (see MonthlyCommemorations.Source).
+        new("tir-mikael", "St. Michael the Archangel (Tir Mikael)", ObservanceKind.SaintsDay, new EthiopianDate(year, Tir, 12)),
+        new("kidane-mehret", "Kidane Mehret (Covenant of Mercy)", ObservanceKind.SaintsDay, new EthiopianDate(year, Yekatit, 16)),
         new("peter-and-paul", "Feast of Peter and Paul", ObservanceKind.Feast, new EthiopianDate(year, Hamle, 5)),
         new("filseta", "Filseta (Assumption of Mary)", ObservanceKind.Feast, new EthiopianDate(year, Nehase, 16)),
     ];

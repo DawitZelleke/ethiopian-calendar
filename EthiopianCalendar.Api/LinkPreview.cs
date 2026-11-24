@@ -14,7 +14,7 @@ namespace EthiopianCalendar.Api;
 /// </summary>
 public static partial class LinkPreview
 {
-    public const string SiteName = "Ethiopian Orthodox Calendar";
+    public const string SiteName = "13th Month";
 
     // Escapes <, >, ", ' and & but leaves readable text (·, Ge'ez letters) as is.
     private static readonly HtmlEncoder Encoder = HtmlEncoder.Create(UnicodeRanges.All);

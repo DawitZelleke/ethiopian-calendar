@@ -1,0 +1,19 @@
+.about section p + p {
+  margin-top: 14px !important;
+}
+
+.snippet {
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.snippet code {
+  white-space: pre;
+  color: var(--text);
+}

@@ -163,3 +163,38 @@
 .month-link a {
   text-decoration: none;
 }
+
+.lesson-card {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.lesson-card:hover {
+  border-color: var(--accent);
+}
+
+.lesson-card strong {
+  font-size: 21px;
+  line-height: 1.3;
+}
+
+.lesson-card .verse-line {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.lesson-card .ref {
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.more-lessons {
+  margin: 10px 0 0;
+  font-size: 15px;
+}

@@ -26,7 +26,7 @@ public class LinkPreviewTests
         var preview = LinkPreview.For("tsome-nebiyat", Eth(2026, 11, 20), "https://example.com");
 
         Assert.NotNull(preview);
-        Assert.Equal("Tsome Nebiyat (Fast of the Prophets) · Ethiopian Orthodox Calendar", preview.Title);
+        Assert.Equal("Tsome Nebiyat (Fast of the Prophets) · 13th Month", preview.Title);
         Assert.StartsWith("Begins Tuesday, November 24, 2026 · 44 days.", preview.Description);
         Assert.Equal("https://example.com/tsome-nebiyat", preview.Url);
     }
@@ -100,7 +100,7 @@ public class LinkPreviewEndpointTests : IClassFixture<WebApplicationFactory<Prog
     {
         var html = await _client.GetStringAsync("/tsome-nebiyat");
 
-        Assert.Contains("<title>Tsome Nebiyat (Fast of the Prophets) · Ethiopian Orthodox Calendar</title>", html);
+        Assert.Contains("<title>Tsome Nebiyat (Fast of the Prophets) · 13th Month</title>", html);
         Assert.Contains("og:url", html);
     }
 

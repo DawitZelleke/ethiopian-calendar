@@ -11,7 +11,8 @@ public static class CalendarFeed
     /// <param name="fromYear">The first Ethiopian year to include.</param>
     /// <param name="years">How many Ethiopian years to include.</param>
     /// <param name="siteUrl">Base URL for links to each observance's page, e.g. https://example.com</param>
-    public static IReadOnlyList<CalendarEvent> Events(int fromYear, int years, string siteUrl)
+    /// <param name="parish">Optional: also include this parish's own tabot days.</param>
+    public static IReadOnlyList<CalendarEvent> Events(int fromYear, int years, string siteUrl, ParishProfile? parish = null)
     {
         var events = new List<CalendarEvent>();
 
@@ -21,10 +22,25 @@ public static class CalendarFeed
 
             // Always included: the Wednesday and Friday fasts shape daily life as much as the named fasts do.
             events.AddRange(WeeklyFasts(year, siteUrl));
+
+            if (parish is not null)
+                events.AddRange(ParishCalendar.TabotDays(parish, year).Select(t => TabotEvent(t, parish, siteUrl)));
         }
 
         return events.OrderBy(e => e.Start).ToList();
     }
+
+    /// <summary>The calendar name for a parish's feed, e.g. "St. Teklehaimanot ..., Ottawa".</summary>
+    public static string CalendarNameFor(ParishProfile parish) => $"{parish.Name}: {CalendarName}";
+
+    private static CalendarEvent TabotEvent(Observance tabot, ParishProfile parish, string siteUrl) => new(
+        // The parish id keeps UIDs unique if a subscriber follows two parishes' feeds.
+        Uid: $"{parish.Id}-{tabot.Id}-{IcsWriter.FormatDate(tabot.Date.ToGregorian())}@ethiopian-calendar",
+        Summary: tabot.Name,
+        Start: tabot.Date.ToGregorian(),
+        EndInclusive: tabot.Date.ToGregorian(),
+        Description: $"{tabot.Date}\n\nTabot procession at {parish.Name}.",
+        Url: siteUrl);
 
     private static CalendarEvent ToEvent(Occurrence o, string siteUrl)
     {

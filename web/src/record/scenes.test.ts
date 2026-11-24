@@ -9,6 +9,7 @@ const nebiyatDay: Day = {
   isFastDay: true,
   fasts: [{ id: 'tsome-nebiyat', name: 'Tsome Nebiyat (Fast of the Prophets)', dayNumber: 1, totalDays: 44 }],
   observances: [],
+  commemorations: [],
 }
 
 const hidarTsionDay: Day = {

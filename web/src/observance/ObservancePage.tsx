@@ -32,9 +32,6 @@ export function ObservancePage({ id }: { id: string }) {
 
   return (
     <main className="home observance">
-      <a className="back" href="/">
-        ← Ethiopian Orthodox Calendar
-      </a>
 
       <header>
         {entry && <p className="eyebrow">{typeLabel(entry.type)}</p>}
@@ -101,10 +98,6 @@ export function ObservancePage({ id }: { id: string }) {
         occurrence && <p className="draft-note">I haven't written about this one yet.</p>
       )}
 
-      <footer>
-        Dates are computed with Bahire Hasab, the church's traditional calculation.{' '}
-        <a href="https://github.com/DawitZelleke/ethiopian-calendar">Source code</a>
-      </footer>
     </main>
   )
 }
@@ -146,6 +139,6 @@ function typeLabel(type: string) {
 
 function useDocumentTitle(title?: string) {
   useEffect(() => {
-    if (title) document.title = `${title} · Ethiopian Orthodox Calendar`
+    if (title) document.title = `${title} · 13th Month`
   }, [title])
 }

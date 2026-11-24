@@ -1,0 +1,18 @@
+{
+  // Parish-specific days for St. Teklehaimanot Ethiopian Orthodox Tewahedo Church, Ottawa.
+  // Every entry must name its source. Add a date only after someone from the parish confirms it.
+  "id": "st-teklehaimanot-ottawa",
+  "name": "St. Teklehaimanot Ethiopian Orthodox Tewahedo Church, Ottawa",
+  "nameAmharic": "ኦታዋ ቅዱስ ተክለሃይማኖት የኢትዮጵያ ኦርቶዶክስ ተዋሕዶ ቤተ ክርስቲያን",
+  "tabots": [
+    {
+      "id": "hidar-mikael",
+      "saint": "St. Michael the Archangel",
+      "saintAmharic": "ቅዱስ ሚካኤል",
+      "occasion": "Hidar Mikael",
+      "month": 3,
+      "day": 12,
+      "source": "Parishioner (family), November 2026: the tabot came out on Hidar 12, 2019"
+    }
+  ]
+}

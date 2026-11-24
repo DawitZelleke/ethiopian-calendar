@@ -5,6 +5,8 @@ public enum ObservanceKind
     Feast,
     FastBegins,
     SaintsDay,
+    /// <summary>A parish brings out a tabot (e.g. St. Michael's on Hidar 12). Parish-specific.</summary>
+    Tabot,
 }
 
 /// <summary>A named observance on a specific date.</summary>
