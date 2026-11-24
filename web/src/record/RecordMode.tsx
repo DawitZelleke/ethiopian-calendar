@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { fetchDay, type Day } from '../api'
 import { entries } from '../content'
+import { lessonFor } from '../lessons'
 import { buildScenes, next, pickFocus, previous, type Focus, type Position, type Scene } from './scenes'
 import './record.css'
 
@@ -11,7 +12,7 @@ const CANVAS_HEIGHT = 1920
  * A fixed 1080x1920 (9:16) canvas built for screen recording.
  * Controls: → / Space / click = next beat, ← = back, R = restart, G = safe-zone guides.
  */
-export function RecordMode({ isoDate, focusId }: { isoDate: string; focusId?: string }) {
+export function RecordMode({ isoDate, focusId, lessonId }: { isoDate: string; focusId?: string; lessonId?: string }) {
   const [day, setDay] = useState<Day>()
   const [error, setError] = useState<string>()
   const [pos, setPos] = useState<Position>({ scene: 0, step: 0 })
@@ -22,10 +23,14 @@ export function RecordMode({ isoDate, focusId }: { isoDate: string; focusId?: st
     fetchDay(isoDate).then(setDay, (e: Error) => setError(e.message))
   }, [isoDate])
 
-  const focus = useMemo(() => (day ? pickFocus(day, entries, focusId) : undefined), [day, focusId])
+  const lesson = useMemo(() => lessonFor(isoDate, lessonId), [isoDate, lessonId])
+  const focus = useMemo(
+    () => (day ? pickFocus(day, entries, focusId ?? lesson?.observance) : undefined),
+    [day, focusId, lesson],
+  )
   const scenes = useMemo(
-    () => (day ? buildScenes(day, focus, import.meta.env.VITE_SITE_URL ?? window.location.host) : []),
-    [day, focus],
+    () => (day ? buildScenes(day, focus, import.meta.env.VITE_SITE_URL ?? window.location.host, lesson) : []),
+    [day, focus, lesson],
   )
 
   const forward = useCallback(() => setPos((p) => next(scenes, p)), [scenes])
@@ -153,8 +158,11 @@ function SceneView({ scene, step }: { scene: Scene; step: number }) {
     case 'verse':
       return (
         <div className="scene scene-text">
-          <p className="verse-text geez reveal in">{scene.text}</p>
-          {scene.translation && <p className="verse-translation reveal in">{scene.translation}</p>}
+          {scene.text && <p className="verse-text geez reveal in">{scene.text}</p>}
+          {scene.translation && (
+            // Without the original text, the translation is the main line.
+            <p className={`${scene.text ? 'verse-translation' : 'verse-text'} reveal in`}>{scene.translation}</p>
+          )}
           <p className="verse-ref reveal in">{scene.reference}</p>
         </div>
       )
