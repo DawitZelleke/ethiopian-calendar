@@ -1,0 +1,24 @@
+{
+  "id": "ethiopian-reading-isaiah",
+  "date": "2026-11-24",
+  "observance": "tsome-nebiyat",
+  "hook": "Ethiopia appears in the Bible, reading a prophet.",
+  "verse": {
+    "translation": "“Do you understand what you are reading?” He said, “How can I, unless someone explains it to me?”",
+    "reference": "Acts 8:30–31 (World English Bible)"
+  },
+  "story": [
+    "In Acts 8, an Ethiopian official, treasurer to the queen of the Ethiopians, is riding home from worshipping in Jerusalem, reading the prophet Isaiah.",
+    "Philip the evangelist runs up to his chariot and explains that Isaiah's words point to Jesus. The official is baptized that same day.",
+    "Ethiopian tradition remembers him as one of the first to carry the faith home. In the 300s, Ethiopia's kingdom of Aksum became one of the first Christian kingdoms in the world."
+  ],
+  "meaning": "Tsome Nebiyat is the Fast of the Prophets: 44 days of waiting for the promise Isaiah wrote about. And like that official, I'm still learning to understand what I read.",
+  "sources": [
+    { "title": "Acts 8:26–39, World English Bible (public domain)", "url": "https://ebible.org/web/ACT08.htm" },
+    { "title": "Teaching on Tsome Nebiyat by Memhir Senay (Hidar 2019)" }
+  ],
+  "review": {
+    "reviewed": false,
+    "notes": "Check the verse wording against a World English Bible before recording. If the family Bible has the Amharic for Acts 8:30-31, add it as verse.text."
+  }
+}

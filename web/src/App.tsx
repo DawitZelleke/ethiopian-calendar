@@ -8,7 +8,8 @@ import { todayIso } from './api'
  * A handful of page types, so a router library would be overkill:
  *   /                                  home: today and what's coming up
  *   /month, /month/2019/3              a month of the Ethiopian calendar
- *   /record/2026-11-24?focus=<id>      Record Mode for a date (focus is optional)
+ *   /record/2026-11-24?focus=<id>      Record Mode for a date: that date's lesson if there is one
+ *                                      (or ?lesson=<id>), otherwise the fast or feast's description
  *   /record                            Record Mode for today
  *   /tsome-nebiyat                     a page for one fast or feast (any lowercase id)
  * Order matters: "/month" and "/record" would also match the fast-and-feast pattern.
@@ -23,8 +24,14 @@ export default function App() {
 
   const record = /^\/record(?:\/(\d{4}-\d{2}-\d{2}))?\/?$/.exec(path)
   if (record) {
-    const focus = new URLSearchParams(window.location.search).get('focus') ?? undefined
-    return <RecordMode isoDate={record[1] ?? todayIso()} focusId={focus} />
+    const params = new URLSearchParams(window.location.search)
+    return (
+      <RecordMode
+        isoDate={record[1] ?? todayIso()}
+        focusId={params.get('focus') ?? undefined}
+        lessonId={params.get('lesson') ?? undefined}
+      />
+    )
   }
 
   const observance = /^\/([a-z]+(?:-[a-z]+)*)\/?$/.exec(path)

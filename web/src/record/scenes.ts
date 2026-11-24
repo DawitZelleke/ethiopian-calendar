@@ -4,6 +4,7 @@
 import type { Day, FastDay, Observance } from '../api'
 import { formatGregorian } from '../api'
 import type { Entry } from '../content'
+import type { Lesson } from '../lessons'
 
 export interface Focus {
   id: string
@@ -22,7 +23,7 @@ export type Scene =
       focus?: Focus
     }
   | { type: 'text'; label: string; text: string }
-  | { type: 'verse'; text: string; translation?: string; reference: string }
+  | { type: 'verse'; text?: string; translation?: string; reference: string }
   | { type: 'list'; label: string; items: string[] }
   | { type: 'close'; line: string; url: string }
 
@@ -82,7 +83,11 @@ export function stepCount(scene: Scene): number {
   }
 }
 
-export function buildScenes(day: Day, focus: Focus | undefined, siteUrl: string): Scene[] {
+/**
+ * The scenes for one video. With a lesson: date, hook, verse, the story (one beat per
+ * screen), why it matters, close. Without one: the fast or feast's own description.
+ */
+export function buildScenes(day: Day, focus: Focus | undefined, siteUrl: string, lesson?: Lesson): Scene[] {
   const scenes: Scene[] = [
     {
       type: 'title',
@@ -94,7 +99,12 @@ export function buildScenes(day: Day, focus: Focus | undefined, siteUrl: string)
   ]
 
   const entry = focus?.entry
-  if (entry) {
+  if (lesson) {
+    scenes.push({ type: 'text', label: 'Today', text: lesson.hook })
+    scenes.push({ type: 'verse', ...lesson.verse })
+    for (const beat of lesson.story) scenes.push({ type: 'text', label: 'The story', text: beat })
+    scenes.push({ type: 'text', label: 'Why it matters', text: lesson.meaning })
+  } else if (entry) {
     if (entry.verse) {
       scenes.push({ type: 'verse', ...entry.verse })
     }
@@ -105,8 +115,9 @@ export function buildScenes(day: Day, focus: Focus | undefined, siteUrl: string)
     }
   }
 
-  // Point viewers at the page for this exact fast or feast, if it has written content.
-  const url = entry ? `${siteUrl}/${entry.id}` : siteUrl
+  // Point viewers at the page for this exact fast or feast.
+  const pageId = lesson?.observance ?? entry?.id
+  const url = pageId ? `${siteUrl}/${pageId}` : siteUrl
   scenes.push({ type: 'close', line: "I'm learning these one by one. Follow along.", url })
   return scenes
 }

@@ -79,6 +79,17 @@ describe('buildScenes', () => {
     expect(scenes.map((s) => s.type)).toEqual(['title', 'verse', 'text', 'text', 'list', 'close'])
   })
 
+  it('builds a history lesson: hook, verse, one screen per story beat, meaning, close', () => {
+    const lesson = {
+      id: 'l', date: '2026-11-24', observance: 'tsome-nebiyat', hook: 'hook',
+      verse: { translation: 'verse', reference: 'Acts 8:30' },
+      story: ['one', 'two', 'three'], meaning: 'meaning', sources: [], review: { reviewed: false },
+    }
+    const scenes = buildScenes(nebiyatDay, pickFocus(nebiyatDay, entries), 'example.com', lesson)
+    expect(scenes.map((s) => s.type)).toEqual(['title', 'text', 'verse', 'text', 'text', 'text', 'text', 'close'])
+    expect(scenes.at(-1)).toMatchObject({ url: 'example.com/tsome-nebiyat' })
+  })
+
   it('builds only title and close without content', () => {
     const scenes = buildScenes(nebiyatDay, pickFocus(nebiyatDay, {}), 'example.com')
     expect(scenes.map((s) => s.type)).toEqual(['title', 'close'])
