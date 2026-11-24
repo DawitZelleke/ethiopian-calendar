@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/DawitZelleke/ethiopian-calendar/actions/workflows/ci.yml/badge.svg)
 
-**Live:** [ethiopian-calendar.onrender.com](https://ethiopian-calendar.onrender.com) · try [Tsome Nebiyat](https://ethiopian-calendar.onrender.com/tsome-nebiyat) or [Record Mode](https://ethiopian-calendar.onrender.com/record/2026-11-24)
+**Live:** [13thmonth.ca](https://13thmonth.ca) · try [Tsome Nebiyat](https://13thmonth.ca/tsome-nebiyat) or [Record Mode](https://13thmonth.ca/record/2026-11-24)
 
 A C# / .NET 10 engine, REST API and React + TypeScript site that converts between the Ethiopian and Gregorian calendars and computes the feasts and fasts of the Ethiopian Orthodox Tewahedo Church using **Bahire Hasab**, the church's traditional calculation.
 

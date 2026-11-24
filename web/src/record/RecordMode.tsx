@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { fetchDay, type Day } from '../api'
 import { entries } from '../content'
 import { lessonFor } from '../lessons'
+import { SITE_HOST } from '../site'
 import { buildScenes, next, pickFocus, previous, type Focus, type Position, type Scene } from './scenes'
 import './record.css'
 
@@ -29,7 +30,8 @@ export function RecordMode({ isoDate, focusId, lessonId }: { isoDate: string; fo
     [day, focusId, lesson],
   )
   const scenes = useMemo(
-    () => (day ? buildScenes(day, focus, import.meta.env.VITE_SITE_URL ?? window.location.host, lesson) : []),
+    // Always show the public address, even when Record Mode is opened from localhost or onrender.com.
+    () => (day ? buildScenes(day, focus, import.meta.env.VITE_SITE_URL ?? SITE_HOST, lesson) : []),
     [day, focus, lesson],
   )
 

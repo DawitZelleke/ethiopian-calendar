@@ -1,4 +1,4 @@
-/** Calendar feed URLs for a host, e.g. "ethiopian-calendar.onrender.com". */
+/** Calendar feed URLs for a host, e.g. "13thmonth.ca". */
 export function feedLinks(host: string) {
   const path = `${host}/calendar.ics`
   const webcal = `webcal://${path}`
