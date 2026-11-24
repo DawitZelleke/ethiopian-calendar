@@ -150,6 +150,14 @@ function SceneView({ scene, step }: { scene: Scene; step: number }) {
         </div>
       )
     }
+    case 'verse':
+      return (
+        <div className="scene scene-text">
+          <p className="verse-text geez reveal in">{scene.text}</p>
+          {scene.translation && <p className="verse-translation reveal in">{scene.translation}</p>}
+          <p className="verse-ref reveal in">{scene.reference}</p>
+        </div>
+      )
     case 'text':
       return (
         <div className="scene scene-text">

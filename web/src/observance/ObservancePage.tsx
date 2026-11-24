@@ -58,6 +58,7 @@ export function ObservancePage({ id }: { id: string }) {
           {entry.verse && (
             <blockquote className="verse">
               <p>{entry.verse.text}</p>
+              {entry.verse.translation && <p>{entry.verse.translation}</p>}
               <cite>{entry.verse.reference}</cite>
             </blockquote>
           )}

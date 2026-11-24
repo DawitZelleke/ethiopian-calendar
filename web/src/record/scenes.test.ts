@@ -73,6 +73,12 @@ describe('buildScenes', () => {
     expect(scenes.at(-1)).toMatchObject({ type: 'close', url: 'example.com/tsome-nebiyat' })
   })
 
+  it('adds a verse scene after the title when the entry has a verse', () => {
+    const withVerse = { ...entries['tsome-nebiyat'], verse: { text: 'I humbled my soul with fasting.', reference: 'Psalm 34:13' } }
+    const scenes = buildScenes(nebiyatDay, pickFocus(nebiyatDay, { 'tsome-nebiyat': withVerse }), 'example.com')
+    expect(scenes.map((s) => s.type)).toEqual(['title', 'verse', 'text', 'text', 'list', 'close'])
+  })
+
   it('builds only title and close without content', () => {
     const scenes = buildScenes(nebiyatDay, pickFocus(nebiyatDay, {}), 'example.com')
     expect(scenes.map((s) => s.type)).toEqual(['title', 'close'])
