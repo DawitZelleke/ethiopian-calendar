@@ -1,0 +1,24 @@
+{
+  "id": "queen-of-sheba",
+  "date": "2026-11-25",
+  "observance": "tsome-nebiyat",
+  "hook": "Ethiopia says the Queen of Sheba was theirs.",
+  "verse": {
+    "translation": "“…she came from the ends of the earth to hear the wisdom of Solomon; and behold, someone greater than Solomon is here.”",
+    "reference": "Matthew 12:42 (World English Bible)"
+  },
+  "story": [
+    "In 1 Kings 10, the Queen of Sheba travels to Jerusalem with a caravan of spices, gold and precious stones, to test King Solomon with hard questions.",
+    "Historians still debate where Sheba was. Ethiopian tradition, written down in the Kebra Nagast, names her Makeda and says she bore Solomon a son, Menelik, Ethiopia's first king.",
+    "Ethiopia's emperors traced their line back to Menelik for centuries, down to the last emperor, Haile Selassie, in 1974."
+  ],
+  "meaning": "Jesus held her up as an example: she crossed the world to hear wisdom, and someone greater than Solomon was coming. The Fast of the Prophets is the waiting for him.",
+  "sources": [
+    { "title": "1 Kings 10:1–13 and Matthew 12:42, World English Bible (public domain)", "url": "https://ebible.org/web/" },
+    { "title": "Kebra Nagast (The Glory of the Kings), Ethiopian tradition compiled in the 1300s" }
+  ],
+  "review": {
+    "reviewed": false,
+    "notes": "Ask family or Memhir Senay whether they'd tell the Makeda story differently."
+  }
+}
