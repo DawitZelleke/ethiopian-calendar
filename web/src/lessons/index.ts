@@ -30,6 +30,14 @@ const files = import.meta.glob<Lesson>('./*.json', { eager: true, import: 'defau
 
 export const lessons: Lesson[] = Object.values(files)
 
+/**
+ * The lessons published by this date, newest first. Lessons are written ahead of time,
+ * so each one appears on the Lessons page on its own day.
+ */
+export function publishedLessons(isoToday: string, all: Lesson[] = lessons): Lesson[] {
+  return all.filter((l) => l.date <= isoToday).sort((a, b) => b.date.localeCompare(a.date))
+}
+
 /** The lesson asked for by id, or else the lesson for this date. */
 export function lessonFor(isoDate: string, id?: string): Lesson | undefined {
   return (id ? lessons.find((l) => l.id === id) : undefined) ?? lessons.find((l) => l.date === isoDate)

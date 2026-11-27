@@ -1,14 +1,11 @@
 import { useEffect } from 'react'
-import { formatGregorian } from '../api'
+import { formatGregorian, todayIso } from '../api'
 import { entries } from '../content'
 import { pageTitle } from '../site'
-import { lessons, type Lesson } from '.'
+import { lessons, publishedLessons, type Lesson } from '.'
 import '../home/home.css'
 import '../observance/observance.css'
 import './lessons.css'
-
-/** Newest first. */
-const sorted = [...lessons].sort((a, b) => b.date.localeCompare(a.date))
 
 function observanceName(lesson: Lesson) {
   const entry = entries[lesson.observance]
@@ -33,7 +30,7 @@ export function LessonsPage() {
       </header>
 
       <ul className="lesson-list">
-        {sorted.map((lesson) => (
+        {publishedLessons(todayIso()).map((lesson) => (
           <li key={lesson.id}>
             <a href={`/lessons/${lesson.id}`}>
               <span className="when">
