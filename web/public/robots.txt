@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /api/
+Disallow: /record
+
+Sitemap: https://13thmonth.ca/sitemap.xml
